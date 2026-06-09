@@ -1,0 +1,62 @@
+{
+  "settings": {
+    "migrated": 6,
+    "iconPacksPath": ".obsidian/plugins/obsidian-icon-folder",
+    "fontSize": 16,
+    "emojiStyle": "native",
+    "iconColor": null,
+    "recentlyUsedIcons": [
+      "SfrTray.and.arrow.down",
+      "PhFileHtml",
+      "SfrBeats.powerbeats.left",
+      "SfrFolder.fill",
+      "SfrTray",
+      "OcRss16",
+      "SfrText.document",
+      "SfrBrain",
+      "SfrDocument",
+      "SfrFolder"
+    ],
+    "recentlyUsedIconsSize": 10,
+    "rules": [
+      {
+        "rule": "\\.md$",
+        "icon": "SfrText.document",
+        "for": "everything",
+        "order": 1
+      },
+      {
+        "rule": "^raw$",
+        "icon": "SfrTray",
+        "for": "everything",
+        "order": 2
+      },
+      {
+        "rule": ".",
+        "icon": "SfrFolder",
+        "for": "folders",
+        "order": 3
+      }
+    ],
+    "extraMargin": {
+      "top": 0,
+      "right": 4,
+      "bottom": 0,
+      "left": 0
+    },
+    "iconInTabsEnabled": true,
+    "iconInTitleEnabled": false,
+    "iconInTitlePosition": "above",
+    "iconInFrontmatterEnabled": false,
+    "iconInFrontmatterFieldName": "icon",
+    "iconColorInFrontmatterFieldName": "iconColor",
+    "iconsBackgroundCheckEnabled": true,
+    "iconsInNotesEnabled": true,
+    "iconsInLinksEnabled": false,
+    "iconIdentifier": ":",
+    "lucideIconPackType": "native",
+    "debugMode": false,
+    "useInternalPlugins": false
+  },
+  "wiki/concepts/llm-wiki-pattern.md": "SfrText.document"
+}

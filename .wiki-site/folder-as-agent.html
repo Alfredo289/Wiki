@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Folder-as-Agent Pattern — Wikiwise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="page-folder-as-agent">
+<header class="masthead">
+  <a class="masthead-mark" href="home.html">
+    <span class="masthead-mark-letter">W</span>
+    <span class="masthead-mark-words">
+      <span class="masthead-mark-word-primary">Wikiwise</span>
+    </span>
+  </a>
+  <div class="masthead-search">
+    <input id="search-input" type="search" placeholder="Search Wikiwise…" autocomplete="off">
+    <div id="search-results"></div>
+  </div>
+</header>
+<div class="layout">
+<aside class="rail">
+<nav class="rail-nav"><h4>Navigate</h4><ul><li><a href="home.html">Home</a></li><li><a href="index.html">Catalog</a></li><li><a href="map-3d.html">Map</a></li><li><a href="log.html">Recent changes</a></li></ul></nav>
+<section class="toc-block"><h4>Contents</h4><div class="toc"><ul><li><a href="#layers-of-a-folder-agent">Layers of a Folder-Agent</a></li><li><a href="#relationship-to-other-patterns">Relationship to Other Patterns</a></li><li><a href="#claude-cowork-as-folder-agent-ui">Claude Cowork as Folder-Agent UI</a></li><li><a href="#anti-pattern-agent-swarms">Anti-pattern: Agent Swarms</a></li><li><a href="#counter-arguments">Counter-arguments</a></li><li><a href="#data-gaps">Data gaps</a></li></ul></div></section>
+</aside>
+<div class="article">
+<div class="article-head">
+  <h1 class="article-title">Folder-as-Agent Pattern</h1>
+<div class="article-subtitle">concept</div>
+</div>
+<div class="article-body">
+<table class="infobox"><caption>Source</caption><tr><th>tldr</th><td>&quot;A project folder with CLAUDE.md, skill definitions, and accumulated context turns a generalized LLM into a specialist agent. The context is the agent, not the model.&quot;</td></tr><tr><th>date_created</th><td>2026-04-14</td></tr><tr><th>date_modified</th><td>2026-04-14</td></tr><tr><th>tags</th><td>[ai-agents, agent-design, knowledge-management, compound-engineering]</td></tr><tr><th>sources</th><td>[&quot;[[klaassen-2026-folder-is-the-agent]]&quot;, &quot;[[englert-2026-claude-cowork-tutorial]]&quot;]</td></tr><tr><th>explored</th><td>false</td></tr><tr><th>confidence</th><td>medium</td></tr></table><p>A design pattern where a project folder - containing instruction files (<a href="http://CLAUDE.md/AGENT.md" target="_blank" rel="noopener">CLAUDE.md/AGENT.md</a>), skill definitions, documentation, and accumulated operational context - transforms a generalized LLM into a specialist agent. Coined by <a class="wikilink" data-slug="kieran-klaassen" href="kieran-klaassen.html">Kieran Klaassen</a> in the context of building <a class="wikilink" data-slug="cora" href="cora.html">Cora</a> at <a href="http://Every.to" target="_blank" rel="noopener">Every.to</a>.</p>
+<p><strong>Core claim</strong>: An agent is a model with enough context so you don’t have to re-explain everything each time you open the chat. The folder provides that context. The same model pointed at different folders becomes a fundamentally different agent.</p>
+<h2 id="layers-of-a-folder-agent">Layers of a Folder-Agent</h2>
+<ol>
+<li><strong>Conventions</strong> - coding standards, deploy workflows, naming patterns (<a href="http://CLAUDE.md" target="_blank" rel="noopener">CLAUDE.md</a>)</li>
+<li><strong>Institutional knowledge</strong> - architecture docs, design decisions, domain documentation</li>
+<li><strong>Operational memory</strong> - runbooks, incident investigations, resolved bugs</li>
+<li><strong>Specialized sub-agents</strong> - refined instruction files for specific tasks (reviewers, planners)</li>
+</ol>
+<h2 id="relationship-to-other-patterns">Relationship to Other Patterns</h2>
+<ul>
+<li><strong><a class="wikilink" data-slug="agentic-constitution" href="agentic-constitution.html">Agentic Constitution</a></strong> - similar principle applied at the personal level rather than project level. The constitution captures identity and goals; the folder captures project knowledge.</li>
+<li><strong><a class="wikilink" data-slug="llm-wiki-pattern" href="llm-wiki-pattern.html">LLM Wiki Pattern</a></strong> - another form of pre-compiled context, but organized as a queryable knowledge base rather than an agent instruction set.</li>
+<li><strong><a class="wikilink" data-slug="compound-engineering" href="compound-engineering.html">Compound Engineering</a></strong> - Klaassen’s broader methodology; the folder-as-agent pattern is one outcome of sustained compound engineering practice.</li>
+</ul>
+<h2 id="claude-cowork-as-folder-agent-ui">Claude Cowork as Folder-Agent UI</h2>
+<p><a class="wikilink" data-slug="jj-englert" href="jj-englert.html">JJ Englert</a> (<a class="wikilink" data-slug="englert-2026-claude-cowork-tutorial" href="englert-2026-claude-cowork-tutorial.html">englert-2026-claude-cowork-tutorial</a>) demonstrates the folder-as-agent pattern in <a class="wikilink" data-slug="claude-cowork" href="claude-cowork.html">Claude Cowork</a>: each project maps to a folder on your computer, with shared memory persisting across conversations. The project accumulates context (brain files, skills, connector configurations) that make Claude progressively more effective - the same compound accumulation Klaassen describes, but packaged in a GUI for non-engineers.</p>
+<h2 id="anti-pattern-agent-swarms">Anti-pattern: Agent Swarms</h2>
+<p>Klaassen explicitly warns against agent swarms - multiple agents coordinating with each other without human direction. The failure mode: agents don’t have a speed limit, but the human reviewing their output does. Parallel sessions work only when each agent has a clear task and a human directs the work.</p>
+<h2 id="counter-arguments">Counter-arguments</h2>
+<ul>
+<li>“Give the model good context” is a well-known principle - the folder framing adds packaging but not necessarily new insight</li>
+<li>The 44-agent claim is unverified and the dispatch layer is undescribed</li>
+<li>Agent swarm failures may reflect 2026 tooling limitations, not a permanent constraint</li>
+</ul>
+<h2 id="data-gaps">Data gaps</h2>
+<ul>
+<li>Source article clipping is truncated - dispatch layer details missing</li>
+<li>No examples of what a minimal vs mature folder-agent looks like</li>
+<li>No metrics on how folder-agent quality improves over time</li>
+<li>Now corroborated by Englert’s Cowork tutorial, though in a different (GUI) context</li>
+</ul>
+<section class="backlinks-main"><h2>What links here</h2><ul><li><a class="wikilink" href="claude-cowork.html">Claude Cowork</a></li><li><a class="wikilink" href="compound-engineering.html">Compound Engineering</a></li><li><a class="wikilink" href="context-compression.html">Context Compression</a></li><li><a class="wikilink" href="cora.html">Cora</a></li><li><a class="wikilink" href="englert-2026-claude-cowork-tutorial.html">JJ Englert - Claude Cowork Tutorial for Non-Engineers</a></li><li><a class="wikilink" href="index.html">Wiki Index</a></li><li><a class="wikilink" href="keyboard-driven-workflow.html">Keyboard-Driven Workflow</a></li><li><a class="wikilink" href="kieran-klaassen.html">Kieran Klaassen</a></li><li><a class="wikilink" href="knowledge-work-prs.html">Knowledge Work PRs</a></li></ul></section>
+</div>
+</div>
+</div>
+<script src="search.json.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

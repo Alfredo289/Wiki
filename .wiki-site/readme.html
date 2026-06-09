@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LLM Wikid — Wikiwise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="page-readme">
+<header class="masthead">
+  <a class="masthead-mark" href="home.html">
+    <span class="masthead-mark-letter">W</span>
+    <span class="masthead-mark-words">
+      <span class="masthead-mark-word-primary">Wikiwise</span>
+    </span>
+  </a>
+  <div class="masthead-search">
+    <input id="search-input" type="search" placeholder="Search Wikiwise…" autocomplete="off">
+    <div id="search-results"></div>
+  </div>
+</header>
+<div class="layout">
+<aside class="rail">
+<nav class="rail-nav"><h4>Navigate</h4><ul><li><a href="home.html">Home</a></li><li><a href="index.html">Catalog</a></li><li><a href="map-3d.html">Map</a></li><li><a href="log.html">Recent changes</a></li></ul></nav>
+<section class="toc-block"><h4>Contents</h4><div class="toc"><ul><li><a href="#quick-start">Quick Start</a></li><li><a href="#how-it-works">How It Works</a></li><li><a href="#the-ingest-pipeline">The Ingest Pipeline</a></li><li><a href="#commands">Commands</a></li><li><a href="#folder-structure">Folder Structure</a></li><li><a href="#quality-controls">Quality Controls</a></li><li><a href="#curation">Curation</a></li><li><a href="#git-sync">Git Sync</a></li><ul><li><a href="#claude-dispatch-automated-ingest">Claude Dispatch (automated ingest)</a></li></ul><li><a href="#search-qmd">Search (qmd)</a></li><li><a href="#recommended-skills">Recommended Skills</a></li><li><a href="#obsidian-plugins">Obsidian Plugins</a></li><li><a href="#scaling">Scaling</a></li><li><a href="#optional-tools">Optional Tools</a></li><li><a href="#credits">Credits</a></li></ul></div></section>
+</aside>
+<div class="article">
+<div class="article-head">
+  <h1 class="article-title">LLM Wikid</h1>
+
+</div>
+<div class="article-body">
+<p align="center">
+  <img src="assets/cover.png" alt="LLM Wikid" width="700">
+</p>
+<h1>LLM Wikid</h1>
+<p>An AI-maintained knowledge base that lives in Obsidian. Based on <a href="https://x.com/karpathy/status/1890540708772143562" target="_blank" rel="noopener">Karpathy’s LLM Wiki pattern</a>.</p>
+<p>You dump raw sources into a folder. An AI agent reads them, compiles structured wiki pages with cross-references, runs bias checks, and maintains a master index. Every question you ask gets filed back in. The wiki compounds the more you use it.</p>
+<p>Works with any agent that can read markdown and run shell commands: Claude Code, OpenClaw, Hermes, Codex, or your own setup.</p>
+<h2 id="quick-start">Quick Start</h2>
+<pre><code class="language-bash">git clone https://github.com/shannhk/llm-wikid.git my-wiki
+cd my-wiki
+
+# open as an Obsidian vault
+# File &gt; Open Vault &gt; select the my-wiki folder
+
+# start your agent
+claude --dangerously-skip-permissions   # Claude Code
+# or open with OpenClaw, Hermes, Codex, etc.
+</code></pre>
+<p>The agent reads <code>CLAUDE.md</code> and knows everything. That file is the schema that controls the entire system.</p>
+<h2 id="how-it-works">How It Works</h2>
+<p>This is <strong>not RAG</strong>. RAG re-derives answers every time by chunking documents and running vector search. This system compiles knowledge once into structured wiki pages, keeps them current, and pre-builds cross-references. At ~100 articles / ~400K words, Karpathy found this outperforms RAG for Q&amp;A.</p>
+<pre><code>                    ┌──────────────────────────────────┐
+                    │           CLAUDE.md              │
+                    │   the schema that controls       │
+                    │   everything the agent does      │
+                    └──────────┬───────────────────────┘
+                               │
+    ┌──────────┐      ┌────────▼────────┐      ┌──────────────┐
+    │  raw/    │      │    INGEST       │      │   wiki/      │
+    │          │─────&gt;│                 │─────&gt;│              │
+    │ clips    │      │ 0. sort clips   │      │ concepts/    │
+    │ ideas    │      │ 1. resolve URLs │      │ entities/    │
+    │ tweets   │      │ 2. extract media│      │ sources/     │
+    │ articles │      │ 3. classify     │      │ index.md     │
+    │ papers   │      │ 4. compile pages│      │ log.md       │
+    │          │      │ 5. cross-link   │      │              │
+    └──────────┘      │ 6. bias check   │      └──────┬───────┘
+                      │ 7. update index │             │
+                      └─────────────────┘     ┌───────▼───────┐
+                                              │   Obsidian    │
+    ┌──────────┐      ┌─────────────────┐     │  graph view   │
+    │ question │─────&gt;│    QUERY        │     │  + Dataview   │
+    │          │      │                 │     └───────────────┘
+    │          │      │ scan TLDRs      │
+    │          │&lt;─────│ read relevant   │
+    │  answer  │      │ synthesize      │
+    │  (filed  │      │ file back in    │───&gt; wiki grows
+    │   back)  │      └─────────────────┘
+    └──────────┘
+</code></pre>
+<p>The compound loop: every answer filed back means the next query has more to work with. Your curiosity makes the system smarter.</p>
+<h2 id="the-ingest-pipeline">The Ingest Pipeline</h2>
+<p>When you run <code>/wiki-ingest</code>, the agent processes everything in <code>raw/</code> through these phases:</p>
+<p><strong>Phase 0 - Sort clippings.</strong> Anything in <code>raw/clippings/</code> gets moved to the right subfolder based on its URL. Tweet goes to <code>raw/bookmarks/</code>, article to <code>raw/articles/</code>, PDF to <code>raw/papers/</code>. The clippings folder is just an inbox.</p>
+<p><strong>Phase 1 - Resolve.</strong> The agent detects what each file contains and fetches the full content:</p>
+<ul>
+<li>YouTube URL: extracts transcript via <code>yt-dlp</code></li>
+<li>X/Twitter URL: fetches tweet text, thread, metrics via X API</li>
+<li>Web URL / Reddit: scrapes full page via <code>scrapling</code></li>
+<li>PDF: reads directly</li>
+<li>Plain text: already resolved</li>
+</ul>
+<p>The resolved content replaces the file in-place. The original URL stays in frontmatter for provenance.</p>
+<p><strong>Phase 1.5 - Media extraction.</strong> Images get downloaded to <code>raw/assets/images/</code> and analyzed. Videos get their transcripts pulled. A tweet that says “here’s my stack” with an image of the stack is useless without the image.</p>
+<p><strong>Phase 2 - Classify and compile.</strong> Each source gets classified by type (transcript, paper, report, article, tweet, notes) and extracted differently. A transcript gets speaker attribution and action items. A paper gets method and findings. An article gets core thesis and supporting arguments. Generic extraction misses what makes each format valuable.</p>
+<p>The agent creates wiki pages, adds <code><a class="wikilink missing" data-slug="wikilinks" href="wikilinks.html">wikilinks</a></code> between them, runs bias checks (counter-arguments and data gaps on every page), and updates the master index.</p>
+<p><strong>Phase 3 - Re-index.</strong> If you have <code>qmd</code> installed, the search index gets updated with new content.</p>
+<h2 id="commands">Commands</h2>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/wiki-ingest</code></td>
+<td>Process new raw sources into wiki pages</td>
+</tr>
+<tr>
+<td><code>/wiki-query [question]</code></td>
+<td>Research a question, get a cited answer, file it back</td>
+</tr>
+<tr>
+<td><code>/wiki-explore [topic]</code></td>
+<td>Actively research and expand a topic using web search and <code>/last30days</code></td>
+</tr>
+<tr>
+<td><code>/wiki-lint</code></td>
+<td>Health check: contradictions, orphans, broken links, stale content</td>
+</tr>
+</tbody>
+</table>
+<h2 id="folder-structure">Folder Structure</h2>
+<p>After your first ingest, this is what it looks like:</p>
+<pre><code>raw/                                          # your messy inbox
+  clippings/                                  # Web Clipper landing zone (auto-sorted on ingest)
+  ideas/
+    idea-brand-voice-skill.md                 # half-formed thought you typed out
+    idea-ai-marketing-repos.md                # project idea
+  bookmarks/
+    karpathy-2026-llm-wiki.md                 # clipped tweet, resolved to full content
+    gregisenberg-ai-saas-framework.md         # another clip
+  articles/
+    my-2026-three-moats-article.md            # your own published content
+  papers/                                     # research PDFs
+  assets/images/
+    flowchart-agent-architecture.png          # downloaded from a tweet
+    ascii-marketing-levels.png                # screenshot you added
+  x-archive/                                  # X/Twitter account export (87 tweets, etc.)
+
+wiki/                                         # compiled knowledge (AI-maintained)
+  index.md                                    # master catalog with TLDRs
+  log.md                                      # append-only changelog
+  dashboard.md                                # Dataview dashboard
+  concepts/
+    ai-marketing.md                           # appeared in 8+ sources
+    distribution-moat.md                      # cross-cutting concept
+    context-engineering.md                    # stub (1 source, will grow)
+  entities/
+    claude-superpowers.md                     # tool page
+    greg-isenberg.md                          # person page
+  sources/
+    karpathy-2026-llm-wiki.md                 # summary of one raw source
+    your-2026-ai-agent-workflows.md          # themed group of your tweets
+  syntheses/                                  # cross-cutting analysis (grows over time)
+  outputs/
+    context-engineering-explained.md          # filed answer to a /wiki-query
+  sops/
+    visual-content-style.md                   # your documented process
+
+templates/                                    # starter templates for each page type
+.claude/commands/                             # slash commands
+</code></pre>
+<h2 id="quality-controls">Quality Controls</h2>
+<p>The system has safeguards to prevent it from becoming a pile of confident-sounding AI output:</p>
+<p><strong>Bias checks.</strong> Every concept and source page includes a <code>## Counter-arguments</code> section (what pushes back) and a <code>## Data gaps</code> section (what we don’t know). Without these, the wiki just agrees with every source.</p>
+<p><strong>Validation gate.</strong> The agent sets <code>explored: false</code> on every page it creates. Only you can mark something as reviewed by setting it to <code>true</code>. You always know what’s been human-verified and what hasn’t.</p>
+<p><strong>Confidence levels.</strong> Pages are tagged <code>high</code>, <code>medium</code>, <code>low</code>, or <code>uncertain</code> based on how well-supported the content is. Multiple corroborating sources = high. Single mention with thin evidence = low. The agent has to be honest.</p>
+<p><strong>Source tracing.</strong> Every claim links back to a specific source page. No vague “research shows” without pointing to which research.</p>
+<p><strong>No blind links.</strong> Every <code><a class="wikilink missing" data-slug="wikilink" href="wikilink.html">wikilink</a></code> resolves to an actual page. If a concept is mentioned but doesn’t have a page yet, the agent creates a stub.</p>
+<h2 id="curation">Curation</h2>
+<p>This is an idea bank, not a fact database. Some of what goes in will be wrong, half-formed, or just bad. That’s fine. The point is capturing your thinking so it compounds over time.</p>
+<p>But curation matters. Before clipping something into <code>raw/</code>, ask: does this feel 80%+ relevant to what I’m working on or thinking about? If it’s noise, skip it. The wiki gets stronger when the inputs are high-signal.</p>
+<p>Running <code>/wiki-lint</code> regularly catches the drift: contradictions between pages, stale claims, orphan pages nobody links to, concepts mentioned but never defined. The agent fixes what it can and flags what needs your judgment.</p>
+<h2 id="git-sync">Git Sync</h2>
+<p>GitHub is the source of truth. Every operation that changes <code>wiki/</code> or <code>raw/</code> ends with a commit and push. This means:</p>
+<ul>
+<li>Every change is reversible (<code>git revert</code>)</li>
+<li>Multiple agents can work on the same wiki (pull before writing, push after)</li>
+<li>You can access the wiki from anywhere that can clone a repo</li>
+<li>Your entire knowledge history is preserved</li>
+</ul>
+<pre><code class="language-bash"># every agent session, every ingest, every query:
+git add . &amp;&amp; git commit -m &quot;wiki update&quot; &amp;&amp; git push
+</code></pre>
+<h3 id="claude-dispatch-automated-ingest">Claude Dispatch (automated ingest)</h3>
+<p>Set up a scheduled trigger that runs <code>/wiki-ingest</code> every morning. You clip things during the day, they get processed overnight.</p>
+<pre><code class="language-bash"># in Claude Code:
+/schedule
+</code></pre>
+<p>Or configure directly: a cron trigger pointing at your repo, running the ingest prompt daily. The remote agent clones the repo, reads <a href="http://CLAUDE.md" target="_blank" rel="noopener">CLAUDE.md</a>, processes new sources, commits, and pushes. You wake up to a richer wiki.</p>
+<p>The Dispatch agent runs remotely, so it won’t have local tools like X API keys. It can still process web URLs, plain text, and anything already resolved. Tweet resolution happens when you run ingest locally.</p>
+<h2 id="search-qmd">Search (qmd)</h2>
+<p>For fast search across your wiki, install <a href="https://github.com/tobi/qmd" target="_blank" rel="noopener">qmd</a> by Tobi Lutke. Hybrid BM25/vector search with LLM re-ranking, 100% on-device.</p>
+<pre><code class="language-bash">npm install -g @tobilu/qmd
+qmd collection add wiki --name my-wiki
+qmd embed
+</code></pre>
+<p>Three search modes:</p>
+<pre><code class="language-bash">qmd search &quot;query&quot;        # BM25 keyword search (fast)
+qmd vsearch &quot;query&quot;       # vector semantic search
+qmd query &quot;query&quot;         # hybrid with LLM re-ranking (best)
+</code></pre>
+<p>qmd has a built-in MCP server so your agent can use it as a native tool:</p>
+<pre><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;qmd&quot;: { &quot;command&quot;: &quot;qmd&quot;, &quot;args&quot;: [&quot;mcp&quot;] }
+  }
+}
+</code></pre>
+<p>The <code>/wiki-explore</code> command uses qmd automatically when installed.</p>
+<h2 id="recommended-skills">Recommended Skills</h2>
+<table>
+<thead>
+<tr>
+<th>Skill</th>
+<th>What it adds</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://github.com/mvanhorn/last30days-skill" target="_blank" rel="noopener">last30days</a></td>
+<td>Searches Reddit, HN, X, YouTube, GitHub, Polymarket for recent community signals. Used by <code>/wiki-explore</code>.</td>
+</tr>
+<tr>
+<td><a href="https://obsidian.md/clipper" target="_blank" rel="noopener">Obsidian Web Clipper</a></td>
+<td>Clip anything from your browser directly to <code>raw/clippings/</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="obsidian-plugins">Obsidian Plugins</h2>
+<table>
+<thead>
+<tr>
+<th>Plugin</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dataview</td>
+<td>Query frontmatter, build dashboards from wiki data</td>
+</tr>
+<tr>
+<td>Obsidian Git</td>
+<td>Auto-commit on interval, push to remote</td>
+</tr>
+<tr>
+<td>Templater</td>
+<td>Auto-populate dates and fields on new notes</td>
+</tr>
+<tr>
+<td>Tag Wrangler</td>
+<td>Bulk rename and merge tags</td>
+</tr>
+</tbody>
+</table>
+<h2 id="scaling">Scaling</h2>
+<table>
+<thead>
+<tr>
+<th>Wiki Size</th>
+<th>Strategy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0-300 pages</td>
+<td>File-based, index TLDR scanning + qmd search</td>
+</tr>
+<tr>
+<td>300-500 pages</td>
+<td>qmd becomes primary search layer</td>
+</tr>
+<tr>
+<td>500+ pages</td>
+<td>Consider PostgreSQL/Supabase</td>
+</tr>
+</tbody>
+</table>
+<h2 id="optional-tools">Optional Tools</h2>
+<p>Installed as needed during ingestion:</p>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>What it does</th>
+<th>Install</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>yt-dlp</code></td>
+<td>YouTube transcripts</td>
+<td><code>brew install yt-dlp</code></td>
+</tr>
+<tr>
+<td><code>scrapling</code></td>
+<td>Web scraping</td>
+<td><code>pipx install scrapling</code></td>
+</tr>
+<tr>
+<td><code>summarize</code></td>
+<td>PDF extraction</td>
+<td><code>brew install steipete/tap/summarize</code></td>
+</tr>
+<tr>
+<td>X API</td>
+<td>Tweet/thread fetching</td>
+<td>OAuth keys in <code>.env</code> (optional)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="credits">Credits</h2>
+<ul>
+<li><a href="https://x.com/karpathy/status/1890540708772143562" target="_blank" rel="noopener">Andrej Karpathy’s LLM Wiki pattern</a> - the original idea</li>
+<li><a href="https://www.youtube.com/watch?v=IVpOyKCNZYw" target="_blank" rel="noopener">hooeem’s LLM Knowledge Base course</a> - practical walkthrough</li>
+<li><a href="https://github.com/tobi/qmd" target="_blank" rel="noopener">qmd</a> by Tobi Lutke - local markdown search engine</li>
+<li><a href="https://github.com/mvanhorn/last30days-skill" target="_blank" rel="noopener">last30days</a> by mvanhorn - multi-platform signal search</li>
+<li>Built by <a href="https://x.com/shannholmberg" target="_blank" rel="noopener">@shannholmberg</a></li>
+</ul>
+
+</div>
+</div>
+</div>
+<script src="search.json.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

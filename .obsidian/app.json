@@ -1,0 +1,12 @@
+{
+  "promptDelete": false,
+  "readableLineLength": true,
+  "showUnsupportedFiles": true,
+  "attachmentFolderPath": "raw/assets",
+  "showInlineTitle": false,
+  "alwaysUpdateLinks": true,
+  "propertiesInDocument": "source",
+  "userIgnoreFilters": [
+    "templates/"
+  ]
+}

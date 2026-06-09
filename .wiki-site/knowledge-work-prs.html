@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Knowledge Work PRs — Wikiwise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="page-knowledge-work-prs">
+<header class="masthead">
+  <a class="masthead-mark" href="home.html">
+    <span class="masthead-mark-letter">W</span>
+    <span class="masthead-mark-words">
+      <span class="masthead-mark-word-primary">Wikiwise</span>
+    </span>
+  </a>
+  <div class="masthead-search">
+    <input id="search-input" type="search" placeholder="Search Wikiwise…" autocomplete="off">
+    <div id="search-results"></div>
+  </div>
+</header>
+<div class="layout">
+<aside class="rail">
+<nav class="rail-nav"><h4>Navigate</h4><ul><li><a href="home.html">Home</a></li><li><a href="index.html">Catalog</a></li><li><a href="map-3d.html">Map</a></li><li><a href="log.html">Recent changes</a></li></ul></nav>
+<section class="toc-block"><h4>Contents</h4><div class="toc"><ul><li><a href="#how-it-works">How it works</a></li><li><a href="#relationship-to-folder-as-agent">Relationship to Folder-as-Agent</a></li><li><a href="#counter-arguments">Counter-arguments</a></li><li><a href="#data-gaps">Data gaps</a></li></ul></div></section>
+</aside>
+<div class="article">
+<div class="article-head">
+  <h1 class="article-title">Knowledge Work PRs</h1>
+<div class="article-subtitle">concept</div>
+</div>
+<div class="article-body">
+<table class="infobox"><caption>Source</caption><tr><th>tldr</th><td>&quot;Vault subroutines that run like code methods - agent does the work, human reviews changes like approving pull requests. Example: 'Tend the Vault' drafts note updates from journal entries.&quot;</td></tr><tr><th>date_created</th><td>2026-04-13</td></tr><tr><th>date_modified</th><td>2026-04-14</td></tr><tr><th>tags</th><td>[knowledge-management, ai-tools, agent-design, workflow]</td></tr><tr><th>sources</th><td>[&quot;[[yb-effect-2026-commonplace-practice]]&quot;]</td></tr><tr><th>explored</th><td>false</td></tr><tr><th>confidence</th><td>low</td></tr></table><p>A workflow pattern where LLM agent subroutines process vault content and propose changes that the human reviews, analogous to code pull requests.</p>
+<p>Described by YB (<a class="wikilink" data-slug="yb-effect-2026-commonplace-practice" href="yb-effect-2026-commonplace-practice.html">yb-effect-2026-commonplace-practice</a>) as the culmination of the Claude + <a class="wikilink" data-slug="obsidian" href="obsidian.html">Obsidian</a> setup, but only effective if the preceding practices (<a class="wikilink" data-slug="commonplace-practice" href="commonplace-practice.html">commonplace-practice</a>, <a class="wikilink" data-slug="atomic-notes" href="atomic-notes.html">atomic-notes</a>, <a class="wikilink" data-slug="intentional-reading" href="intentional-reading.html">intentional-reading</a>, <a class="wikilink" data-slug="agentic-constitution" href="agentic-constitution.html">agentic-constitution</a>) are in place.</p>
+<h2 id="how-it-works">How it works</h2>
+<ol>
+<li>User defines subroutines (instruction sets) in the vault</li>
+<li>Each subroutine starts by reading the <a class="wikilink" data-slug="agentic-constitution" href="agentic-constitution.html">agentic-constitution</a></li>
+<li>Agent executes the subroutine and drafts changes</li>
+<li>User reviews changes one-by-one in a voice session (approve/tweak/reject)</li>
+<li>Approved changes get committed to the vault</li>
+</ol>
+<p><strong>Example</strong>: “Tend the Vault” - checks daily <a class="wikilink" data-slug="commonplace-practice" href="commonplace-practice.html">commonplace-practice</a> entries since last run, identifies threads and insights, drafts updates to <a class="wikilink" data-slug="atomic-notes" href="atomic-notes.html">atomic-notes</a>, presents changes for review.</p>
+<p>The metaphor: agents are developers, you are the engineering manager reviewing PRs before they hit production.</p>
+<h2 id="relationship-to-folder-as-agent">Relationship to Folder-as-Agent</h2>
+<p><a class="wikilink" data-slug="kieran-klaassen" href="kieran-klaassen.html">Kieran Klaassen</a>'s <a class="wikilink" data-slug="folder-as-agent" href="folder-as-agent.html">folder-as-agent</a> pattern describes a similar human-in-the-loop dynamic at the engineering level: parallel <a class="wikilink missing" data-slug="claude-code" href="claude-code.html">Claude Code</a> sessions work when each agent has a clear task and a human directs the work, but agent swarms coordinating autonomously fail. Knowledge Work PRs formalize this same constraint for personal knowledge management - the agent proposes, the human disposes.</p>
+<h2 id="counter-arguments">Counter-arguments</h2>
+<ul>
+<li>The PR metaphor may break down - knowledge work changes are harder to diff than code</li>
+<li>Heavy reliance on agent quality - poor drafts waste more review time than they save</li>
+<li>Voice review sessions add friction compared to just writing the notes yourself</li>
+</ul>
+<h2 id="data-gaps">Data gaps</h2>
+<ul>
+<li>No subroutine examples shown (only “Tend the Vault” described at high level)</li>
+<li>No data on approval/rejection rates or time savings</li>
+<li>Klaassen’s folder-as-agent article provides indirect corroboration of the human-review pattern</li>
+</ul>
+<section class="backlinks-main"><h2>What links here</h2><ul><li><a class="wikilink" href="agentic-constitution.html">Agentic Constitution</a></li><li><a class="wikilink" href="index.html">Wiki Index</a></li><li><a class="wikilink" href="obsidian.html">Obsidian</a></li><li><a class="wikilink" href="yb-effect-2026-commonplace-practice.html">YB - Build a Daily Commonplace Practice</a></li></ul></section>
+</div>
+</div>
+</div>
+<script src="search.json.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,221 @@
+{
+  "main": {
+    "id": "429634b8d3a08c4b",
+    "type": "split",
+    "children": [
+      {
+        "id": "74106eec8e8dca56",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0eeb183ee23f89b2",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "New tab"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "5adc88929e4edba7",
+    "type": "split",
+    "children": [
+      {
+        "id": "357ce1666bda50c7",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "008831c99fb00e0c",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "8988f26d015bcde5",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "941246bc06b93cb7",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "6dc63023c47ce134",
+    "type": "split",
+    "children": [
+      {
+        "id": "5efce4bf79f13d4f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "09f8330650f9f52a",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "c8c0fac9a9b3cd91",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "38c1b1716c7389e5",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "23fe530731f61777",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "b3145f0bca67dd65",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "obsidian42-brat:BRAT": false,
+      "obsidian-custom-frames:Open Todoist": false,
+      "templater-obsidian:Templater": false,
+      "markdown-importer:Open format converter": false,
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "008831c99fb00e0c",
+  "lastOpenFiles": [
+    "templates/synthesis.md",
+    "templates/source.md",
+    "templates/sop.md",
+    "templates/project.md",
+    "templates/output.md",
+    "templates/entity.md",
+    "templates/concept.md",
+    "templates",
+    "commands/wiki-ingest.md",
+    "commands/wiki-query.md",
+    "commands/wiki-lint.md",
+    "commands/wiki-explore.md",
+    "commands",
+    "AGENTS.md",
+    "wiki/decisions/2026-06-09 three-layer-vault-fresh-start.md",
+    "wiki/decisions",
+    "raw",
+    "wiki/raw",
+    "wiki/Neuer Ordner",
+    "wiki",
+    "Neuer Ordner",
+    "carve out/raw/agent-instructions/better-touch-tool/base-system-prompt.md",
+    "carve out/raw/agent-instructions/better-touch-tool/floating-menu-and-widget-creator.md",
+    "carve out/raw/agent-instructions/better-touch-tool/dynamic-context.md",
+    "carve out/raw/agent-instructions/better-touch-tool/btt-expert.md",
+    "carve out/wiki/sops/better-touch-tool-ai-floating-menu-creator.md",
+    "carve out/wiki/sops/better-touch-tool-ai-expert-role.md",
+    "carve out/wiki/sops/better-touch-tool-ai-dynamic-context.md",
+    "carve out/wiki/sops/better-touch-tool-ai-base-prompt.md",
+    "carve out/wiki/entities/keyboard-maestro.md",
+    "carve out/wiki/entities/karabiner-elements.md",
+    "carve out/wiki/entities/better-touch-tool.md",
+    "carve out/wiki/concepts/better-touch-tool-ai-configuration-assistant.md",
+    "carve out/raw/assets/images",
+    "carve out/raw/agent-instructions/better-touch-tool",
+    "carve out/wiki/log.md"
+  ]
+}

@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>claude — Wikiwise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="page-claude">
+<header class="masthead">
+  <a class="masthead-mark" href="home.html">
+    <span class="masthead-mark-letter">W</span>
+    <span class="masthead-mark-words">
+      <span class="masthead-mark-word-primary">Wikiwise</span>
+    </span>
+  </a>
+  <div class="masthead-search">
+    <input id="search-input" type="search" placeholder="Search Wikiwise…" autocomplete="off">
+    <div id="search-results"></div>
+  </div>
+</header>
+<div class="layout">
+<aside class="rail">
+<nav class="rail-nav"><h4>Navigate</h4><ul><li><a href="home.html">Home</a></li><li><a href="index.html">Catalog</a></li><li><a href="map-3d.html">Map</a></li><li><a href="log.html">Recent changes</a></li></ul></nav>
+<section class="toc-block"><h4>Contents</h4><div class="toc"><ul><li><a href="#overview">Overview</a></li><li><a href="#directory-structure">Directory Structure</a></li><ul><li><a href="#wiki">Wiki</a></li><li><a href="#raw">Raw</a></li></ul><li><a href="#frontmatter-schema">Frontmatter Schema</a></li><ul><li><a href="#validation-gate">Validation Gate</a></li></ul><li><a href="#page-types">Page Types</a></li><li><a href="#source-resolution-resolve-before-classify">Source Resolution (Resolve Before Classify)</a></li><ul><li><a href="#resolution-tool-mapping">Resolution Tool Mapping</a></li><li><a href="#media-extraction">Media Extraction</a></li><li><a href="#tool-dependencies">Tool Dependencies</a></li></ul><li><a href="#source-classification-classify-after-resolution">Source Classification (Classify After Resolution)</a></li><li><a href="#bias-check">Bias Check</a></li><li><a href="#operations">Operations</a></li><ul><li><a href="#ingest">INGEST</a></li><li><a href="#query">QUERY</a></li><li><a href="#explore">EXPLORE</a></li><li><a href="#lint">LINT</a></li><li><a href="#compile-rebuild-indexes">COMPILE (rebuild indexes)</a></li></ul><li><a href="#page-creation-threshold">Page Creation Threshold</a></li><li><a href="#quality-standards">Quality Standards</a></li><li><a href="#external-integrations">External Integrations</a></li><li><a href="#scale-plan">Scale Plan</a></li></ul></div></section>
+</aside>
+<div class="article">
+<div class="article-head">
+  <h1 class="article-title">claude</h1>
+
+</div>
+<div class="article-body">
+<h1>LLM Knowledge Base - Schema</h1>
+<h2 id="overview">Overview</h2>
+<p>Personal knowledge base maintained by an LLM agent.
+Raw sources live in <code>raw/</code>. The compiled wiki lives in <code>wiki/</code>.
+You (the AI) maintain all wiki content. The user directs strategy and source
+collection; you execute compilation, maintenance, and queries.</p>
+<p>This is NOT RAG. Knowledge is pre-compiled into wiki pages. The agent reads
+structured pages, not raw chunks. Every query compounds the system.</p>
+<h2 id="directory-structure">Directory Structure</h2>
+<h3 id="wiki">Wiki</h3>
+<ul>
+<li><code>wiki/index.md</code> - Master index linking every page with TLDR for fast scanning</li>
+<li><code>wiki/log.md</code> - Append-only changelog of all operations</li>
+<li><code>wiki/concepts/</code> - Concept pages (ideas, frameworks, topics)</li>
+<li><code>wiki/entities/</code> - Entity pages (people, companies, tools, protocols)</li>
+<li><code>wiki/sources/</code> - Source summary pages (one per raw source)</li>
+<li><code>wiki/syntheses/</code> - Cross-cutting analysis across sources</li>
+<li><code>wiki/outputs/</code> - Filed answers to queries</li>
+<li><code>wiki/sops/</code> - Repeatable processes and workflows</li>
+<li><code>templates/</code> - Starter templates per page type (for Obsidian Templater)</li>
+</ul>
+<h3 id="raw">Raw</h3>
+<ul>
+<li><code>raw/ideas/</code> - Idea notes and brainstorms</li>
+<li><code>raw/bookmarks/</code> - Bookmarked tweet and article sources</li>
+<li><code>raw/x-archive/</code> - X archive tweets (exported from X/Twitter)</li>
+<li><code>raw/clippings/</code> - Obsidian Web Clipper inbox. Everything lands here. During INGEST, files get sorted to the correct subfolder and removed from clippings.</li>
+<li><code>raw/articles/</code> - Long-form articles and blog posts (sorted from clippings)</li>
+<li><code>raw/papers/</code> - Research papers and PDFs (sorted from clippings)</li>
+<li><code>raw/assets/</code> - Images, videos, and other media</li>
+</ul>
+<p>New wiki pages go in the subfolder matching their <code>type</code> frontmatter field. Wikilinks use filename only (Obsidian resolves via shortest-path setting).</p>
+<h2 id="frontmatter-schema">Frontmatter Schema</h2>
+<p>Every wiki page MUST have YAML frontmatter:</p>
+<pre><code class="language-yaml">---
+title: &quot;Page Title&quot;
+tldr: &quot;One to two sentence TLDR - used for index scanning to save tokens&quot;
+date_created: YYYY-MM-DD
+date_modified: YYYY-MM-DD
+type: concept | entity | source | project | sop | synthesis | output
+tags: [topic-tag, another-tag]
+sources: [&quot;<a class="wikilink missing" data-slug="source-page" href="source-page.html">source-page</a>&quot;]
+original_url: &quot;https://...&quot; # For source pages - link to the original content
+explored: false # Validation gate. Only a human sets this to true. AI always sets false.
+confidence: high | medium | low | uncertain # How confident is the content? Be honest.
+---
+</code></pre>
+<h3 id="validation-gate">Validation Gate</h3>
+<p><code>explored</code> defaults to <strong>false</strong> on every AI-created or AI-updated page. Only the user can set it to <code>true</code> after reviewing the content. This prevents blind trust in AI-generated knowledge. The agent must never set <code>explored: true</code>.</p>
+<p><code>confidence</code> signals how well-supported the content is:</p>
+<ul>
+<li><strong>high</strong> - multiple corroborating sources, well-established topic</li>
+<li><strong>medium</strong> - single source or limited evidence, reasonable synthesis</li>
+<li><strong>low</strong> - speculative, early-stage idea, thin evidence</li>
+<li><strong>uncertain</strong> - contradictory sources or insufficient information</li>
+</ul>
+<h2 id="page-types">Page Types</h2>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>concept</td>
+<td>An idea, framework, or topic</td>
+</tr>
+<tr>
+<td>entity</td>
+<td>Person, company, tool, protocol</td>
+</tr>
+<tr>
+<td>source</td>
+<td>Summary of one raw source</td>
+</tr>
+<tr>
+<td>project</td>
+<td>Active project with goals and context</td>
+</tr>
+<tr>
+<td>sop</td>
+<td>Repeatable process or workflow</td>
+</tr>
+<tr>
+<td>synthesis</td>
+<td>Cross-cutting analysis across sources</td>
+</tr>
+<tr>
+<td>output</td>
+<td>Filed answer to a query</td>
+</tr>
+</tbody>
+</table>
+<h2 id="source-resolution-resolve-before-classify">Source Resolution (Resolve Before Classify)</h2>
+<p><code>raw/</code> is a messy inbox. Before classification, INGEST must resolve each input to its full content using the right tool.</p>
+<h3 id="resolution-tool-mapping">Resolution Tool Mapping</h3>
+<table>
+<thead>
+<tr>
+<th>Input Pattern</th>
+<th>Tool</th>
+<th>What It Extracts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>YouTube URL (<a href="http://youtube.com" target="_blank" rel="noopener">youtube.com</a>, <a href="http://youtu.be" target="_blank" rel="noopener">youtu.be</a>)</td>
+<td><code>yt-dlp</code></td>
+<td>Transcript (auto-subs), title, description, metadata</td>
+</tr>
+<tr>
+<td>X/Twitter URL (<a href="http://x.com" target="_blank" rel="noopener">x.com</a>, <a href="http://twitter.com" target="_blank" rel="noopener">twitter.com</a>)</td>
+<td>X API (OAuth)</td>
+<td>Tweet text, thread, author, metrics. If video/image attached, also <code>yt-dlp</code> for video and download images</td>
+</tr>
+<tr>
+<td>Web URL / Reddit URL</td>
+<td><code>scrapling</code></td>
+<td>Page content, title, author, date</td>
+</tr>
+<tr>
+<td>PDF file (.pdf)</td>
+<td>Read directly / <code>summarize</code> CLI</td>
+<td>Full text extraction</td>
+</tr>
+<tr>
+<td>Bookmark dump (list of URLs)</td>
+<td>Parse each URL, resolve individually</td>
+<td>One resolved file per URL</td>
+</tr>
+<tr>
+<td>Plain text / notes / ideas</td>
+<td>Read as-is</td>
+<td>No resolution needed</td>
+</tr>
+</tbody>
+</table>
+<h3 id="media-extraction">Media Extraction</h3>
+<p>Every source with attached media MUST have that media downloaded and analyzed:</p>
+<p><strong>Images:</strong></p>
+<ul>
+<li>Download to <code>raw/assets/images/</code> with descriptive kebab-case names</li>
+<li>Analyze the image content (diagrams, screenshots, infographics, memes, charts)</li>
+<li>Include analysis in the source summary: what the image shows, key data points, visual format</li>
+<li>Reference in the raw file frontmatter: <code>media: [&quot;raw/assets/images/filename.png&quot;]</code></li>
+<li>Embed in wiki source pages: <code>!<a class="wikilink missing" data-slug="raw/assets/images/filename.png" href="raw/assets/images/filename.png.html">raw/assets/images/filename.png</a></code></li>
+</ul>
+<p><strong>Videos:</strong></p>
+<ul>
+<li>Extract transcript via <code>yt-dlp --write-auto-sub --skip-download</code></li>
+<li>Download thumbnail to <code>raw/assets/images/</code></li>
+<li>If short video (under 2 min), describe the visual content in the source summary</li>
+<li>Reference in raw file frontmatter: <code>media_transcript: &quot;raw/assets/filename-transcript.txt&quot;</code></li>
+</ul>
+<p>Images often contain the actual information (diagrams, frameworks, data). A tweet saying “here’s my framework” with an image of the framework is useless without the image. The wiki must capture the visual knowledge, not just the text.</p>
+<p>Resolution updates the file in <code>raw/</code> in-place, preserving the original URL in frontmatter:</p>
+<pre><code class="language-markdown">---
+original_url: https://example.com/article
+fetched: YYYY-MM-DD
+source_tool: scrapling
+---
+
+[Full fetched content here]
+</code></pre>
+<h3 id="tool-dependencies">Tool Dependencies</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Install</th>
+<th>Auth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>yt-dlp</code></td>
+<td><code>brew install yt-dlp</code></td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>scrapling</code></td>
+<td><code>pipx install scrapling</code></td>
+<td>None</td>
+</tr>
+<tr>
+<td>X API</td>
+<td>Official API (OAuth 2.0)</td>
+<td>Bearer token + client credentials in <code>.env</code> (optional)</td>
+</tr>
+<tr>
+<td><code>summarize</code> (optional)</td>
+<td><code>brew install steipete/tap/summarize</code></td>
+<td>None</td>
+</tr>
+</tbody>
+</table>
+<h2 id="source-classification-classify-after-resolution">Source Classification (Classify After Resolution)</h2>
+<p>After resolution, classify the content and extract accordingly:</p>
+<table>
+<thead>
+<tr>
+<th>Source Type</th>
+<th>Extraction Focus</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Transcript</strong> (YouTube, meeting)</td>
+<td>Speaker attribution, decisions made, action items, key quotes</td>
+</tr>
+<tr>
+<td><strong>Paper/Research</strong></td>
+<td>Method, findings, limitations, how it connects to existing knowledge</td>
+</tr>
+<tr>
+<td><strong>Report</strong></td>
+<td>Executive summary first, key metrics, recommendations</td>
+</tr>
+<tr>
+<td><strong>Article/Blog</strong></td>
+<td>Core thesis, supporting arguments, author’s perspective</td>
+</tr>
+<tr>
+<td><strong>Tweet/Thread</strong></td>
+<td>Core claim, context, engagement signals, author credibility</td>
+</tr>
+<tr>
+<td><strong>Reddit thread</strong></td>
+<td>Original post thesis, top arguments for/against, consensus vs outliers</td>
+</tr>
+<tr>
+<td><strong>Notes/Ideas</strong></td>
+<td>Key ideas, questions raised, connections to other topics</td>
+</tr>
+</tbody>
+</table>
+<p>Generic extraction misses what makes each format valuable.</p>
+<h2 id="bias-check">Bias Check</h2>
+<p>Every concept, synthesis, and source page MUST include:</p>
+<pre><code class="language-markdown">## Counter-arguments
+[What pushes back against the claims on this page]
+
+## Data gaps
+[What we don't know, what's missing, what needs more sources]
+</code></pre>
+<p>This prevents the wiki from becoming an echo chamber that agrees with every source.</p>
+<h2 id="operations">Operations</h2>
+<h3 id="ingest">INGEST</h3>
+<ol>
+<li>Scan <code>raw/</code> for files not yet summarized in <code>wiki/</code></li>
+<li><strong>RESOLVE</strong>: For each unprocessed file, detect if it contains a URL or unresolved reference. Fetch full content using the right tool and update the file in-place, preserving the original URL in frontmatter.</li>
+<li>Classify each source by type (transcript, paper, report, article, tweet, reddit, notes)</li>
+<li>Create source summary using type-specific extraction</li>
+<li>Identify concepts, entities, and projects mentioned</li>
+<li>Create new pages if concept appears in 2+ sources (stub if only 1)</li>
+<li>Update existing pages - append new info, never rewrite from scratch</li>
+<li>Add <code><a class="wikilink missing" data-slug="wikilinks" href="wikilinks.html">wikilinks</a></code> to connect new content to existing pages</li>
+<li>Run bias check: add counter-arguments and data gaps sections</li>
+<li>Update <code>wiki/index.md</code> with new entries and TLDRs</li>
+<li>Append to <code>wiki/log.md</code> with date, operation, pages touched</li>
+</ol>
+<h3 id="query">QUERY</h3>
+<ol>
+<li>Read <code>wiki/index.md</code> - scan TLDRs only</li>
+<li>Identify relevant pages from TLDRs (skip irrelevant ones to save tokens)</li>
+<li>Read full content of relevant pages</li>
+<li>Synthesize an answer with citations to specific <code><a class="wikilink missing" data-slug="wiki-pages" href="wiki-pages.html">wiki pages</a></code></li>
+<li>Save the answer as <code>wiki/outputs/{question-slug}.md</code> with <code>type: output</code></li>
+<li>Update <code>wiki/index.md</code> and <code>wiki/log.md</code></li>
+</ol>
+<h3 id="explore">EXPLORE</h3>
+<ol>
+<li>Take a topic or concept name as input</li>
+<li>Read the existing wiki page for that topic (if it exists)</li>
+<li>Identify gaps, thin sections, and open questions from the page’s Data gaps section</li>
+<li>Search for additional information using available tools (web search, scraping, etc.)</li>
+<li>Expand the page with new findings, always citing sources</li>
+<li>Create new source pages in <code>wiki/sources/</code> for any external material found</li>
+<li>Update related concept and entity pages with cross-references</li>
+<li>Set <code>confidence</code> based on source quality and corroboration</li>
+<li>Set <code>explored: false</code> (always - only the user validates)</li>
+<li>Update <code>wiki/index.md</code> and <code>wiki/log.md</code></li>
+</ol>
+<h3 id="lint">LINT</h3>
+<ol>
+<li>Find contradictions between pages</li>
+<li>Find orphan pages (no inbound links)</li>
+<li>Find broken <code><a class="wikilink missing" data-slug="wikilinks" href="wikilinks.html">wikilinks</a></code> pointing to nothing</li>
+<li>Identify missing frontmatter fields</li>
+<li>Flag stale content (&gt;6 months, no updates)</li>
+<li>Suggest new articles for frequently mentioned but unlinked concepts</li>
+<li>Check for duplicate concepts under different names - merge them</li>
+<li>Fix automatically where possible</li>
+<li>Output report to <code>wiki/outputs/lint-report-{date}.md</code></li>
+</ol>
+<h3 id="compile-rebuild-indexes">COMPILE (rebuild indexes)</h3>
+<ol>
+<li>Scan all wiki pages</li>
+<li>Regenerate <code>wiki/index.md</code> with current page list and TLDRs</li>
+<li>Verify all <code><a class="wikilink missing" data-slug="wikilinks" href="wikilinks.html">wikilinks</a></code> resolve to existing pages</li>
+<li>Create stubs for any unresolved links</li>
+</ol>
+<h2 id="page-creation-threshold">Page Creation Threshold</h2>
+<ul>
+<li><strong>Full page</strong>: subject appears in 2+ sources</li>
+<li><strong>Stub page</strong>: single mention (frontmatter + one-line definition + source link)</li>
+<li><strong>Never</strong> leave a <code><a class="wikilink missing" data-slug="wikilink" href="wikilink.html">wikilink</a></code> pointing to nothing</li>
+</ul>
+<h2 id="quality-standards">Quality Standards</h2>
+<ul>
+<li>Source summaries: 200-500 words, synthesize - don’t copy</li>
+<li>Concept articles: 500-1500 words with clear lead section</li>
+<li>Always trace claims to specific source pages</li>
+<li>Flag contradictions with a warning note, stating both positions</li>
+<li>Prefer recency when sources conflict</li>
+<li>Only make connections explicitly supported by source material</li>
+<li>Use <code><a class="wikilink missing" data-slug="wikilinks" href="wikilinks.html">wikilinks</a></code> for all internal cross-references</li>
+<li>Link only the first occurrence of a concept per section</li>
+<li>Bold key terms on first use in each article</li>
+<li>No em dashes - use regular dashes or commas</li>
+<li>All filenames: kebab-case, lowercase</li>
+<li>Source summaries: <code>{author-or-source}-{year}-{short-title}.md</code></li>
+</ul>
+<h2 id="external-integrations">External Integrations</h2>
+<ul>
+<li><strong>Git</strong>: Version control for the vault. Every change is reversible.</li>
+<li><strong>Obsidian</strong>: Browse and read the wiki. Graph view for connections. Dataview for queries.</li>
+<li><strong>Obsidian Web Clipper</strong>: Save location set to <code>raw/clippings/</code>. Clip anything - tweets, articles, Reddit, YouTube, GitHub. During INGEST Phase 0, files get sorted to the correct raw/ subfolder based on source URL, then removed from clippings/.</li>
+</ul>
+<h2 id="scale-plan">Scale Plan</h2>
+<table>
+<thead>
+<tr>
+<th>Pages</th>
+<th>Strategy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0-300</td>
+<td>File-based, <code>index.md</code> TLDR scanning. Current approach.</td>
+</tr>
+<tr>
+<td>300-500</td>
+<td>Add <code>qmd</code> - local markdown search with hybrid BM25/vector + LLM re-ranking. CLI and MCP server.</td>
+</tr>
+<tr>
+<td>500+</td>
+<td>Consider structured DB (PostgreSQL/Supabase).</td>
+</tr>
+</tbody>
+</table>
+<section class="backlinks-main"><h2>What links here</h2><ul><li><a class="wikilink" href="klaassen-2026-folder-is-the-agent.html">Kieran Klaassen - The Folder Is the Agent</a></li></ul></section>
+</div>
+</div>
+</div>
+<script src="search.json.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

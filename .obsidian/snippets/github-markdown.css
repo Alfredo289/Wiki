@@ -1,0 +1,549 @@
+/*
+ * GitHub-style Colors for Obsidian
+ * Derived from github-markdown-css v5.9.0 (sindresorhus/github-markdown-css)
+ * COLORS ONLY — all layout, fonts, spacing, and sizing are left to the theme.
+ */
+
+/* ============================================
+   GITHUB COLOR TOKENS (namespaced)
+   ============================================ */
+
+.theme-light .markdown-reading-view,
+.theme-light .markdown-source-view {
+	--gh-fgColor-default: #1f2328;
+	--gh-fgColor-muted: #59636e;
+	--gh-fgColor-accent: #0969da;
+	--gh-fgColor-danger: #d1242f;
+	--gh-fgColor-success: #1a7f37;
+	--gh-fgColor-attention: #9a6700;
+	--gh-fgColor-done: #8250df;
+	--gh-bgColor-muted: #f6f8fa;
+	--gh-bgColor-neutral-muted: #818b981f;
+	--gh-bgColor-attention-muted: #fff8c5;
+	--gh-borderColor-default: #d1d9e0;
+	--gh-borderColor-muted: #d1d9e0b3;
+	--gh-borderColor-accent-emphasis: #0969da;
+	--gh-borderColor-danger-emphasis: #cf222e;
+	--gh-borderColor-success-emphasis: #1a7f37;
+	--gh-borderColor-attention-emphasis: #9a6700;
+	--gh-borderColor-done-emphasis: #8250df;
+	--gh-syntax-comment: #59636e;
+	--gh-syntax-constant: #0550ae;
+	--gh-syntax-entity: #6639ba;
+	--gh-syntax-entity-tag: #0550ae;
+	--gh-syntax-keyword: #cf222e;
+	--gh-syntax-string: #0a3069;
+	--gh-syntax-variable: #953800;
+	--gh-syntax-string-regexp: #116329;
+	--gh-syntax-storage-modifier-import: #1f2328;
+	--gh-syntax-markup-inserted-text: #116329;
+	--gh-syntax-markup-inserted-bg: #dafbe1;
+	--gh-syntax-markup-deleted-text: #82071e;
+	--gh-syntax-markup-deleted-bg: #ffebe9;
+	--gh-syntax-markup-changed-text: #953800;
+	--gh-syntax-markup-changed-bg: #ffd8b5;
+	--gh-syntax-meta-diff-range: #8250df;
+
+	/* Obsidian editor (CM6) — map GitHub tokens to built-in code vars */
+	--code-background: var(--gh-bgColor-neutral-muted);
+	--code-normal: var(--gh-fgColor-default);
+	--code-comment: var(--gh-syntax-comment);
+	--code-keyword: var(--gh-syntax-keyword);
+	--code-string: var(--gh-syntax-string);
+	--code-function: var(--gh-syntax-entity);
+	--code-operator: var(--gh-syntax-storage-modifier-import);
+	--code-property: var(--gh-syntax-constant);
+	--code-tag: var(--gh-syntax-entity-tag);
+	--code-value: var(--gh-syntax-variable);
+	--code-punctuation: var(
+		--gh-syntax-storage-modifier-import
+	);
+	--code-important: var(--gh-syntax-keyword);
+}
+
+.theme-dark .markdown-reading-view,
+.theme-dark .markdown-source-view {
+	--gh-fgColor-default: #f0f6fc;
+	--gh-fgColor-muted: #9198a1;
+	--gh-fgColor-accent: #4493f8;
+	--gh-fgColor-danger: #f85149;
+	--gh-fgColor-success: #3fb950;
+	--gh-fgColor-attention: #d29922;
+	--gh-fgColor-done: #ab7df8;
+	--gh-bgColor-muted: #151b23;
+	--gh-bgColor-neutral-muted: #656c7633;
+	--gh-bgColor-attention-muted: #bb800926;
+	--gh-borderColor-default: #3d444d;
+	--gh-borderColor-muted: #3d444db3;
+	--gh-borderColor-accent-emphasis: #1f6feb;
+	--gh-borderColor-danger-emphasis: #da3633;
+	--gh-borderColor-success-emphasis: #238636;
+	--gh-borderColor-attention-emphasis: #9e6a03;
+	--gh-borderColor-done-emphasis: #8957e5;
+	--gh-syntax-comment: #9198a1;
+	--gh-syntax-constant: #79c0ff;
+	--gh-syntax-entity: #d2a8ff;
+	--gh-syntax-entity-tag: #7ee787;
+	--gh-syntax-keyword: #ff7b72;
+	--gh-syntax-string: #a5d6ff;
+	--gh-syntax-variable: #ffa657;
+	--gh-syntax-string-regexp: #7ee787;
+	--gh-syntax-storage-modifier-import: #f0f6fc;
+	--gh-syntax-markup-inserted-text: #aff5b4;
+	--gh-syntax-markup-inserted-bg: #033a16;
+	--gh-syntax-markup-deleted-text: #ffdcd7;
+	--gh-syntax-markup-deleted-bg: #67060c;
+	--gh-syntax-markup-changed-text: #ffdfb6;
+	--gh-syntax-markup-changed-bg: #5a1e02;
+	--gh-syntax-meta-diff-range: #d2a8ff;
+
+	/* Obsidian editor (CM6) — map GitHub tokens to built-in code vars */
+	--code-background: var(--gh-bgColor-neutral-muted);
+	--code-normal: var(--gh-fgColor-default);
+	--code-comment: var(--gh-syntax-comment);
+	--code-keyword: var(--gh-syntax-keyword);
+	--code-string: var(--gh-syntax-string);
+	--code-function: var(--gh-syntax-entity);
+	--code-operator: var(--gh-syntax-storage-modifier-import);
+	--code-property: var(--gh-syntax-constant);
+	--code-tag: var(--gh-syntax-entity-tag);
+	--code-value: var(--gh-syntax-variable);
+	--code-punctuation: var(
+		--gh-syntax-storage-modifier-import
+	);
+	--code-important: var(--gh-syntax-keyword);
+}
+
+/* Reading view: Minimal uses --text-code (tx4) for rendered code; editor uses gh-fg — align preview */
+.theme-light .markdown-reading-view,
+.theme-dark .markdown-reading-view {
+	--text-code: var(--gh-fgColor-default);
+}
+
+/* ============================================
+   FEED GITHUB COLORS INTO MINIMAL'S VARIABLES
+   Only color-related vars — no sizing, spacing,
+   fonts, or layout.
+   ============================================ */
+
+body {
+	--blockquote-border-color: var(--gh-borderColor-default);
+	--blockquote-color: var(--gh-fgColor-muted);
+	--link-color: var(--gh-fgColor-accent);
+	--link-external-color: var(--gh-fgColor-accent);
+	--code-background: var(--gh-bgColor-neutral-muted);
+}
+
+/* ============================================
+   h6 MUTED COLOR (GitHub-specific)
+   ============================================ */
+
+.markdown-reading-view h6 {
+	color: var(--gh-fgColor-muted);
+}
+
+/* ============================================
+   h1 / h2 BORDER COLOR
+   ============================================ */
+
+.markdown-reading-view h1,
+.markdown-source-view .HyperMD-header-1 {
+	border-bottom-color: var(--gh-borderColor-muted);
+}
+
+.markdown-reading-view h2,
+.markdown-source-view .HyperMD-header-2 {
+	border-bottom-color: var(--gh-borderColor-muted);
+}
+
+/* ============================================
+   INLINE CODE — match CM6 editor (bg + text)
+   ============================================ */
+
+.markdown-reading-view code:not(pre code),
+.markdown-source-view code:not(pre code) {
+	background-color: var(--gh-bgColor-neutral-muted);
+	color: var(--gh-fgColor-default);
+}
+
+/* ============================================
+   CODE BLOCKS — match CM6 editor (bg + base text)
+   ============================================ */
+
+.markdown-reading-view pre,
+.markdown-source-view pre {
+	background-color: var(--gh-bgColor-muted);
+	color: var(--gh-fgColor-default);
+}
+
+.markdown-reading-view pre code,
+.markdown-source-view pre code {
+	background-color: transparent;
+	color: inherit;
+}
+
+/* ============================================
+   CM6 EDITOR — inline & fenced code (Live Preview / Source)
+   No <code> or <pre> in the editor DOM; use CodeMirror classes.
+   (Preview uses the HTML rules above with the same tokens.)
+   ============================================ */
+
+/* Inline `code` — GitHub neutral-muted pill */
+.markdown-source-view.mod-cm6 span.cm-inline-code {
+	background-color: var(--gh-bgColor-neutral-muted);
+	color: var(--gh-fgColor-default);
+}
+
+/* Fenced ``` blocks — GitHub code block background */
+.markdown-source-view.mod-cm6 .cm-line.HyperMD-codeblock {
+	background-color: var(--gh-bgColor-muted);
+	color: var(--gh-fgColor-default);
+}
+
+/* Fence/backtick lines */
+.markdown-source-view.mod-cm6
+	.cm-formatting.cm-formatting-code-block {
+	color: var(--gh-fgColor-muted);
+}
+
+/* Avoid double background if inline-code nests inside a fence */
+.markdown-source-view.mod-cm6
+	.cm-line.HyperMD-codeblock
+	span.cm-inline-code {
+	background-color: transparent;
+	color: inherit;
+}
+
+/* ============================================
+   HORIZONTAL RULE — color only
+   ============================================ */
+
+.markdown-reading-view hr,
+.markdown-source-view hr {
+	background-color: var(--gh-borderColor-default);
+}
+
+/* ============================================
+   MARK / HIGHLIGHT
+   ============================================ */
+
+.markdown-reading-view mark,
+.markdown-source-view mark {
+	background-color: var(--gh-bgColor-attention-muted);
+	color: var(--gh-fgColor-default);
+}
+
+/* ============================================
+   KEYBOARD SHORTCUTS (kbd) — colors only
+   ============================================ */
+
+.markdown-reading-view kbd,
+.markdown-source-view kbd {
+	color: var(--gh-fgColor-default);
+	background-color: var(--gh-bgColor-muted);
+	border-color: var(--gh-borderColor-muted);
+	box-shadow: inset 0 -1px 0 var(--gh-borderColor-muted);
+}
+
+/* ============================================
+   FOOTNOTES — colors only
+   ============================================ */
+
+.markdown-reading-view .footnotes,
+.markdown-source-view .footnotes {
+	color: var(--gh-fgColor-muted);
+	border-top-color: var(--gh-borderColor-default);
+}
+
+/* ============================================
+   CALLOUTS — GitHub Alert colors
+   ============================================ */
+
+.markdown-reading-view .callout,
+.markdown-source-view .callout {
+	border-left-color: var(--gh-borderColor-default);
+}
+
+.markdown-reading-view .callout[data-callout='note'],
+.markdown-source-view .callout[data-callout='note'],
+.markdown-reading-view .callout[data-callout='info'],
+.markdown-source-view .callout[data-callout='info'] {
+	border-left-color: var(--gh-borderColor-accent-emphasis);
+}
+
+.markdown-reading-view
+	.callout[data-callout='note']
+	.callout-title,
+.markdown-source-view
+	.callout[data-callout='note']
+	.callout-title,
+.markdown-reading-view
+	.callout[data-callout='info']
+	.callout-title,
+.markdown-source-view
+	.callout[data-callout='info']
+	.callout-title {
+	color: var(--gh-fgColor-accent);
+}
+
+.markdown-reading-view .callout[data-callout='important'],
+.markdown-source-view .callout[data-callout='important'] {
+	border-left-color: var(--gh-borderColor-done-emphasis);
+}
+
+.markdown-reading-view
+	.callout[data-callout='important']
+	.callout-title,
+.markdown-source-view
+	.callout[data-callout='important']
+	.callout-title {
+	color: var(--gh-fgColor-done);
+}
+
+.markdown-reading-view .callout[data-callout='warning'],
+.markdown-source-view .callout[data-callout='warning'],
+.markdown-reading-view .callout[data-callout='attention'],
+.markdown-source-view .callout[data-callout='attention'] {
+	border-left-color: var(
+		--gh-borderColor-attention-emphasis
+	);
+}
+
+.markdown-reading-view
+	.callout[data-callout='warning']
+	.callout-title,
+.markdown-source-view
+	.callout[data-callout='warning']
+	.callout-title,
+.markdown-reading-view
+	.callout[data-callout='attention']
+	.callout-title,
+.markdown-source-view
+	.callout[data-callout='attention']
+	.callout-title {
+	color: var(--gh-fgColor-attention);
+}
+
+.markdown-reading-view .callout[data-callout='tip'],
+.markdown-source-view .callout[data-callout='tip'],
+.markdown-reading-view .callout[data-callout='hint'],
+.markdown-source-view .callout[data-callout='hint'] {
+	border-left-color: var(--gh-borderColor-success-emphasis);
+}
+
+.markdown-reading-view
+	.callout[data-callout='tip']
+	.callout-title,
+.markdown-source-view
+	.callout[data-callout='tip']
+	.callout-title,
+.markdown-reading-view
+	.callout[data-callout='hint']
+	.callout-title,
+.markdown-source-view
+	.callout[data-callout='hint']
+	.callout-title {
+	color: var(--gh-fgColor-success);
+}
+
+.markdown-reading-view .callout[data-callout='danger'],
+.markdown-source-view .callout[data-callout='danger'],
+.markdown-reading-view .callout[data-callout='caution'],
+.markdown-source-view .callout[data-callout='caution'],
+.markdown-reading-view .callout[data-callout='error'],
+.markdown-source-view .callout[data-callout='error'] {
+	border-left-color: var(--gh-borderColor-danger-emphasis);
+}
+
+.markdown-reading-view
+	.callout[data-callout='danger']
+	.callout-title,
+.markdown-source-view
+	.callout[data-callout='danger']
+	.callout-title,
+.markdown-reading-view
+	.callout[data-callout='caution']
+	.callout-title,
+.markdown-source-view
+	.callout[data-callout='caution']
+	.callout-title,
+.markdown-reading-view
+	.callout[data-callout='error']
+	.callout-title,
+.markdown-source-view
+	.callout[data-callout='error']
+	.callout-title {
+	color: var(--gh-fgColor-danger);
+}
+
+/* ============================================
+   SYNTAX HIGHLIGHTING — GitHub Prettylights
+   ============================================ */
+
+.markdown-reading-view .token.comment,
+.markdown-reading-view .token.prolog,
+.markdown-reading-view .token.doctype,
+.markdown-reading-view .token.cdata,
+.markdown-source-view .token.comment,
+.markdown-source-view .token.prolog,
+.markdown-source-view .token.doctype,
+.markdown-source-view .token.cdata {
+	color: var(--gh-syntax-comment);
+}
+
+.markdown-reading-view .token.keyword,
+.markdown-reading-view .token.storage,
+.markdown-source-view .token.keyword,
+.markdown-source-view .token.storage {
+	color: var(--gh-syntax-keyword);
+}
+
+.markdown-reading-view .token.string,
+.markdown-reading-view .token.attr-value,
+.markdown-source-view .token.string,
+.markdown-source-view .token.attr-value {
+	color: var(--gh-syntax-string);
+}
+
+.markdown-reading-view .token.function,
+.markdown-source-view .token.function {
+	color: var(--gh-syntax-entity);
+}
+
+.markdown-reading-view .token.class-name,
+.markdown-source-view .token.class-name {
+	color: var(--gh-syntax-entity-tag);
+}
+
+.markdown-reading-view .token.tag,
+.markdown-source-view .token.tag {
+	color: var(--gh-syntax-entity-tag);
+}
+
+.markdown-reading-view .token.number,
+.markdown-reading-view .token.boolean,
+.markdown-source-view .token.number,
+.markdown-source-view .token.boolean {
+	color: var(--gh-syntax-constant);
+}
+
+.markdown-reading-view .token.operator,
+.markdown-reading-view .token.punctuation,
+.markdown-source-view .token.operator,
+.markdown-source-view .token.punctuation {
+	color: var(--gh-syntax-storage-modifier-import);
+}
+
+.markdown-reading-view .token.property,
+.markdown-source-view .token.property {
+	color: var(--gh-syntax-constant);
+}
+
+.markdown-reading-view .token.variable,
+.markdown-source-view .token.variable {
+	color: var(--gh-syntax-variable);
+}
+
+.markdown-reading-view .token.regex,
+.markdown-source-view .token.regex {
+	color: var(--gh-syntax-string-regexp);
+}
+
+.markdown-reading-view .token.inserted,
+.markdown-source-view .token.inserted {
+	color: var(--gh-syntax-markup-inserted-text);
+	background-color: var(--gh-syntax-markup-inserted-bg);
+}
+
+.markdown-reading-view .token.deleted,
+.markdown-source-view .token.deleted {
+	color: var(--gh-syntax-markup-deleted-text);
+	background-color: var(--gh-syntax-markup-deleted-bg);
+}
+
+.markdown-reading-view .token.changed,
+.markdown-source-view .token.changed {
+	color: var(--gh-syntax-markup-changed-text);
+	background-color: var(--gh-syntax-markup-changed-bg);
+}
+
+.markdown-reading-view .token.attr-name,
+.markdown-source-view .token.attr-name {
+	color: var(--gh-syntax-constant);
+}
+
+.markdown-reading-view .token.selector,
+.markdown-source-view .token.selector {
+	color: var(--gh-syntax-keyword);
+}
+
+.markdown-reading-view .token.builtin,
+.markdown-source-view .token.builtin {
+	color: var(--gh-syntax-entity);
+}
+
+/* ============================================
+   CM6 SYNTAX HIGHLIGHTING (Live Preview)
+   ============================================ */
+
+.markdown-source-view .cm-s-obsidian span.cm-comment {
+	color: var(--gh-syntax-comment);
+}
+
+.markdown-source-view .cm-s-obsidian span.cm-keyword {
+	color: var(--gh-syntax-keyword);
+}
+
+.markdown-source-view .cm-s-obsidian span.cm-string {
+	color: var(--gh-syntax-string);
+}
+
+.markdown-source-view .cm-s-obsidian span.cm-number {
+	color: var(--gh-syntax-constant);
+}
+
+.markdown-source-view .cm-s-obsidian span.cm-variable,
+.markdown-source-view .cm-s-obsidian span.cm-variable-2,
+.markdown-source-view .cm-s-obsidian span.cm-variable-3 {
+	color: var(--gh-syntax-variable);
+}
+
+.markdown-source-view .cm-s-obsidian span.cm-def {
+	color: var(--gh-syntax-entity);
+}
+
+.markdown-source-view .cm-s-obsidian span.cm-operator {
+	color: var(--gh-syntax-storage-modifier-import);
+}
+
+.markdown-source-view .cm-s-obsidian span.cm-property {
+	color: var(--gh-syntax-constant);
+}
+
+.markdown-source-view .cm-s-obsidian span.cm-tag {
+	color: var(--gh-syntax-entity-tag);
+}
+
+.markdown-source-view .cm-s-obsidian span.cm-attribute {
+	color: var(--gh-syntax-constant);
+}
+
+.markdown-source-view .cm-s-obsidian span.cm-builtin {
+	color: var(--gh-syntax-entity);
+}
+
+.markdown-source-view .cm-s-obsidian span.cm-atom {
+	color: var(--gh-syntax-constant);
+}
+
+.markdown-source-view .cm-s-obsidian span.cm-type {
+	color: var(--gh-syntax-entity-tag);
+}
+
+.markdown-source-view .cm-s-obsidian span.cm-qualifier {
+	color: var(--gh-syntax-entity);
+}
+
+.markdown-source-view .cm-s-obsidian span.cm-meta {
+	color: var(--gh-syntax-meta-diff-range);
+}

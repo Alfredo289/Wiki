@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kieran Klaassen - The Folder Is the Agent — Wikiwise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="page-klaassen-2026-folder-is-the-agent">
+<header class="masthead">
+  <a class="masthead-mark" href="home.html">
+    <span class="masthead-mark-letter">W</span>
+    <span class="masthead-mark-words">
+      <span class="masthead-mark-word-primary">Wikiwise</span>
+    </span>
+  </a>
+  <div class="masthead-search">
+    <input id="search-input" type="search" placeholder="Search Wikiwise…" autocomplete="off">
+    <div id="search-results"></div>
+  </div>
+</header>
+<div class="layout">
+<aside class="rail">
+<nav class="rail-nav"><h4>Navigate</h4><ul><li><a href="home.html">Home</a></li><li><a href="index.html">Catalog</a></li><li><a href="map-3d.html">Map</a></li><li><a href="log.html">Recent changes</a></li></ul></nav>
+<section class="toc-block"><h4>Contents</h4><div class="toc"><ul><li><a href="#summary">Summary</a></li><li><a href="#the-folder-as-agent-pattern">The Folder-as-Agent Pattern</a></li><li><a href="#key-claims">Key Claims</a></li><li><a href="#relationship-to-other-concepts">Relationship to Other Concepts</a></li><li><a href="#mentioned-tools-and-people">Mentioned Tools and People</a></li><li><a href="#counter-arguments">Counter-arguments</a></li><li><a href="#data-gaps">Data gaps</a></li></ul></div></section>
+</aside>
+<div class="article">
+<div class="article-head">
+  <h1 class="article-title">Kieran Klaassen - The Folder Is the Agent</h1>
+<div class="article-subtitle">source</div>
+</div>
+<div class="article-body">
+<table class="infobox"><caption>Source</caption><tr><th>tldr</th><td>&quot;Agent swarms failed - coordination overhead exceeded human review capacity. Instead, a project folder with CLAUDE.md, skills, and accumulated context IS the agent. Klaassen runs 44 such folder-agents with a dispatch layer routing between them.&quot;</td></tr><tr><th>date_created</th><td>2026-04-14</td></tr><tr><th>date_modified</th><td>2026-04-14</td></tr><tr><th>tags</th><td>[ai-agents, compound-engineering, knowledge-management, claude-code, agent-design]</td></tr><tr><th>sources</th><td>[]</td></tr><tr><th>original_url</th><td>&quot;https://every.to/source-code/the-folder-is-the-agent&quot;</td></tr><tr><th>explored</th><td>false</td></tr><tr><th>confidence</th><td>medium</td></tr></table><p><strong>Source</strong>: Article by Kieran Klaassen, <a href="http://Every.to" target="_blank" rel="noopener">Every.to</a>, 2026-04-13
+<strong>Context</strong>: Klaassen is general manager of <a class="wikilink" data-slug="cora" href="cora.html">Cora</a> (Every’s AI email assistant) and creator of the <a class="wikilink" data-slug="compound-engineering" href="compound-engineering.html">compound-engineering</a> methodology (14,000+ GitHub stars).</p>
+<h2 id="summary">Summary</h2>
+<p>Klaassen spent three months trying to make agent swarms work - multiple AI agents coordinating with each other, deciding what to work on, producing output he hadn’t shaped. The experiment failed: when 10 agents finished simultaneously, he had 10 results to evaluate without enough context to trust any of them. The insight: “AI agents don’t have a speed limit, but the person managing them still does.”</p>
+<p>He stopped looking for a smarter orchestration layer and realized the real agent was something he already had - a <strong>project folder</strong>. A folder with a <a href="http://CLAUDE.md/AGENT.md" target="_blank" rel="noopener">CLAUDE.md/AGENT.md</a> file, skill definitions, and context accumulated through months of <a class="wikilink" data-slug="compound-engineering" href="compound-engineering.html">compound-engineering</a> makes a generalized model into a specialist.</p>
+<h2 id="the-folder-as-agent-pattern">The Folder-as-Agent Pattern</h2>
+<p>An agent is defined as: <strong>a model with enough context so you don’t have to re-explain everything each time you open the chat.</strong></p>
+<p>The ~/cora/ folder demonstrates the layers:</p>
+<ul>
+<li><strong>Conventions and standards</strong> - <a href="http://CLAUDE.md" target="_blank" rel="noopener">CLAUDE.md</a> covers Rails conventions, deploy workflows, database patterns</li>
+<li><strong>Institutional knowledge</strong> - docs/developer-docs/ holds architecture reports, email processing pipeline, assistant system design</li>
+<li><strong>Operational memory</strong> - docs/runbooks/ and docs/investigations/ capture patterns from real incidents</li>
+<li><strong>Specialized agents</strong> - .claude/agents/ holds refined specialists: reviewers, planners, component creators</li>
+</ul>
+<p>Reading order for new agents: <a href="http://CLAUDE.md" target="_blank" rel="noopener">CLAUDE.md</a> first, then architecture document, then assistant system report, then assistant prompt, then component creator agent.</p>
+<h2 id="key-claims">Key Claims</h2>
+<ul>
+<li>Klaassen runs <strong>44 folder-agents</strong> across multiple projects, each in a specialized folder built over months</li>
+<li>A <strong>dispatch layer</strong> routes between the 44 agents</li>
+<li><a class="wikilink missing" data-slug="claude-code" href="claude-code.html">Claude Code</a> Skills - files that give the model specific capabilities - are an example of the folder-as-agent structure. People were already writing markdown instruction files and dropping them into project directories before anyone called them “skills”</li>
+<li>Parallel Claude Code sessions work when each agent has a clear task and a human directs work; swarms where agents coordinate with each other fail</li>
+<li>The same model (mostly <a class="wikilink" data-slug="claude" href="claude.html">Claude</a> Opus 4.6, also GPT 5.4 and Gemini Pro 3.1) becomes a completely different agent when pointed at different folders</li>
+</ul>
+<h2 id="relationship-to-other-concepts">Relationship to Other Concepts</h2>
+<p>The folder-as-agent pattern is closely related to the <a class="wikilink" data-slug="agentic-constitution" href="agentic-constitution.html">agentic-constitution</a> concept from YB - both treat structured markdown files as the primary interface between human intent and AI capability. The key difference: Klaassen’s pattern emphasizes <strong>project-level</strong> accumulated context (codebases, runbooks, incident history), while YB’s constitution emphasizes <strong>personal-level</strong> context (identity, goals, work style).</p>
+<p>Both patterns converge on the idea that the value is in the <strong>accumulated context</strong>, not the model itself.</p>
+<h2 id="mentioned-tools-and-people">Mentioned Tools and People</h2>
+<ul>
+<li><a class="wikilink missing" data-slug="claude-code" href="claude-code.html">Claude Code</a> - primary tool for running folder-agents</li>
+<li><a class="wikilink" data-slug="cora" href="cora.html">Cora</a> - Every’s AI email assistant, Klaassen’s main project</li>
+<li><a class="wikilink" data-slug="compound-engineering" href="compound-engineering.html">compound-engineering</a> - Klaassen’s AI-native engineering methodology</li>
+<li><a href="http://Every.to" target="_blank" rel="noopener">Every.to</a> - publisher, where Klaassen builds Cora</li>
+<li>Trevin Chow - product leader working with Klaassen on compound engineering</li>
+</ul>
+<h2 id="counter-arguments">Counter-arguments</h2>
+<ul>
+<li>44 agents sounds impressive but the article doesn’t describe what most of them do or how the dispatch layer works (clipping truncated)</li>
+<li>The “folder is the agent” framing is essentially “give the model good context” - a well-known principle repackaged as a methodology</li>
+<li>The failure of agent swarms may reflect the state of tooling in early 2026, not a fundamental limitation</li>
+<li>No discussion of when folder-agents fail or produce poor output</li>
+</ul>
+<h2 id="data-gaps">Data gaps</h2>
+<ul>
+<li>Article clipping is truncated - likely missing sections on the dispatch layer, specific agent examples, and conclusions</li>
+<li>No metrics on productivity gains from the 44-agent setup vs fewer agents</li>
+<li>The dispatch layer between agents is mentioned but not described</li>
+<li>No comparison with other orchestration approaches that did work</li>
+</ul>
+<section class="backlinks-main"><h2>What links here</h2><ul><li><a class="wikilink" href="agentic-constitution.html">Agentic Constitution</a></li><li><a class="wikilink" href="compound-engineering.html">Compound Engineering</a></li><li><a class="wikilink" href="cora.html">Cora</a></li><li><a class="wikilink" href="folder-as-agent.html">Folder-as-Agent Pattern</a></li><li><a class="wikilink" href="index.html">Wiki Index</a></li><li><a class="wikilink" href="kieran-klaassen.html">Kieran Klaassen</a></li></ul></section>
+</div>
+</div>
+</div>
+<script src="search.json.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

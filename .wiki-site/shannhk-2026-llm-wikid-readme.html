@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>llm-wikid README - AI-Maintained Knowledge Base for Obsidian — Wikiwise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="page-shannhk-2026-llm-wikid-readme">
+<header class="masthead">
+  <a class="masthead-mark" href="home.html">
+    <span class="masthead-mark-letter">W</span>
+    <span class="masthead-mark-words">
+      <span class="masthead-mark-word-primary">Wikiwise</span>
+    </span>
+  </a>
+  <div class="masthead-search">
+    <input id="search-input" type="search" placeholder="Search Wikiwise…" autocomplete="off">
+    <div id="search-results"></div>
+  </div>
+</header>
+<div class="layout">
+<aside class="rail">
+<nav class="rail-nav"><h4>Navigate</h4><ul><li><a href="home.html">Home</a></li><li><a href="index.html">Catalog</a></li><li><a href="map-3d.html">Map</a></li><li><a href="log.html">Recent changes</a></li></ul></nav>
+<section class="toc-block"><h4>Contents</h4><div class="toc"><ul><li><a href="#summary">Summary</a></li><li><a href="#key-claims">Key Claims</a></li><li><a href="#ingest-pipeline">Ingest Pipeline</a></li><li><a href="#quality-controls">Quality Controls</a></li><li><a href="#tool-ecosystem">Tool Ecosystem</a></li><li><a href="#scaling-strategy">Scaling Strategy</a></li><li><a href="#counter-arguments">Counter-arguments</a></li><li><a href="#data-gaps">Data gaps</a></li></ul></div></section>
+</aside>
+<div class="article">
+<div class="article-head">
+  <h1 class="article-title">llm-wikid README - AI-Maintained Knowledge Base for Obsidian</h1>
+<div class="article-subtitle">source</div>
+</div>
+<div class="article-body">
+<table class="infobox"><caption>Source</caption><tr><th>tldr</th><td>&quot;Documentation for llm-wikid, an open-source LLM wiki system based on Karpathy's pattern. Dumps raw sources into a folder, AI compiles structured wiki pages with cross-references and bias checks. Not RAG - pre-compiles knowledge into pages. Obsidian as the UI layer.&quot;</td></tr><tr><th>date_created</th><td>2026-04-13</td></tr><tr><th>date_modified</th><td>2026-04-13</td></tr><tr><th>tags</th><td>[knowledge-management, ai-tools, obsidian, llm-wiki-pattern]</td></tr><tr><th>sources</th><td>[]</td></tr><tr><th>original_url</th><td>&quot;https://github.com/shannhk/llm-wikid/blob/main/README.md&quot;</td></tr><tr><th>explored</th><td>false</td></tr><tr><th>confidence</th><td>high</td></tr></table><p>!<a class="wikilink missing" data-slug="llm-wikid-cover.png" href="llm-wikid-cover.png.html">llm-wikid-cover.png</a></p>
+<h2 id="summary">Summary</h2>
+<p><strong>llm-wikid</strong> is an open-source project by <a class="wikilink" data-slug="shann-holmberg" href="shann-holmberg.html">shann-holmberg</a> that implements <a class="wikilink" data-slug="andrej-karpathy" href="andrej-karpathy.html">andrej-karpathy</a>'s <a class="wikilink" data-slug="llm-wiki-pattern" href="llm-wiki-pattern.html">llm-wiki-pattern</a> as a ready-to-clone Obsidian vault. The core idea: you dump raw sources (tweets, articles, PDFs, ideas) into a <code>raw/</code> folder, and an AI agent compiles them into structured, cross-referenced wiki pages in <code>wiki/</code>.</p>
+<h2 id="key-claims">Key Claims</h2>
+<p><strong>This is not RAG.</strong> The system explicitly distinguishes itself from retrieval-augmented generation. RAG re-derives answers every time by chunking documents and running vector search. This system <strong>pre-compiles</strong> knowledge into structured wiki pages, keeps them current, and pre-builds cross-references. At ~100 articles / ~400K words, Karpathy found this outperforms RAG for Q&amp;A.</p>
+<p><strong>The compound loop.</strong> Every query answer gets filed back into the wiki, so the next query has more to work with. The system grows smarter with use, not just with new source material.</p>
+<p><strong>Agent-agnostic.</strong> Works with any agent that can read markdown and run shell commands - Claude Code, OpenClaw, Hermes, Codex, or custom setups.</p>
+<h2 id="ingest-pipeline">Ingest Pipeline</h2>
+<p>The system processes sources in phases:</p>
+<ol>
+<li><strong>Sort clippings</strong> - <code>raw/clippings/</code> is an inbox. Files get moved to the right subfolder (tweets to bookmarks, articles to articles, PDFs to papers)</li>
+<li><strong>Resolve</strong> - URLs get fetched via the appropriate tool (yt-dlp for YouTube, scrapling for web, X API for tweets)</li>
+<li><strong>Media extraction</strong> - Images downloaded and analyzed, video transcripts extracted</li>
+<li><strong>Classify and compile</strong> - Type-specific extraction (transcripts get speaker attribution, papers get method/findings, articles get thesis/arguments)</li>
+<li><strong>Cross-link and bias check</strong> - Wikilinks, counter-arguments, data gaps on every page</li>
+</ol>
+<h2 id="quality-controls">Quality Controls</h2>
+<ul>
+<li><strong>Bias checks</strong>: Counter-arguments and data gaps sections on every page</li>
+<li><strong>Validation gate</strong>: <code>explored: false</code> on all AI-created pages, only human sets <code>true</code></li>
+<li><strong>Confidence levels</strong>: high/medium/low/uncertain based on source quality</li>
+<li><strong>Source tracing</strong>: Every claim links to a specific source page</li>
+<li><strong>No blind links</strong>: Every wikilink resolves to a page or stub</li>
+</ul>
+<h2 id="tool-ecosystem">Tool Ecosystem</h2>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a class="wikilink" data-slug="qmd" href="qmd.html">qmd</a></td>
+<td>Local hybrid BM25/vector search with LLM re-ranking</td>
+</tr>
+<tr>
+<td><a class="wikilink" data-slug="obsidian" href="obsidian.html">obsidian</a></td>
+<td>Vault UI, graph view, Dataview queries</td>
+</tr>
+<tr>
+<td>yt-dlp</td>
+<td>YouTube transcript extraction</td>
+</tr>
+<tr>
+<td>scrapling</td>
+<td>Web scraping</td>
+</tr>
+<tr>
+<td>Obsidian Web Clipper</td>
+<td>Browser-to-vault clipping</td>
+</tr>
+</tbody>
+</table>
+<h2 id="scaling-strategy">Scaling Strategy</h2>
+<p>File-based with index scanning up to ~300 pages, then <a class="wikilink" data-slug="qmd" href="qmd.html">qmd</a> as primary search, then PostgreSQL/Supabase at 500+.</p>
+<h2 id="counter-arguments">Counter-arguments</h2>
+<ul>
+<li>Pre-compiled knowledge requires re-processing when understanding changes, unlike RAG which always pulls fresh chunks</li>
+<li>The “outperforms RAG” claim comes from Karpathy’s personal experience at ~100 articles, not a controlled benchmark</li>
+<li>Agent-maintained wikis can accumulate confident-sounding but wrong information if bias checks are superficial</li>
+<li>The compound loop could also compound errors if early sources are flawed</li>
+</ul>
+<h2 id="data-gaps">Data gaps</h2>
+<ul>
+<li>No performance benchmarks comparing this approach to RAG systems at various scales</li>
+<li>Unknown how well the pattern works beyond single-user knowledge bases (team/collaborative use)</li>
+<li>No data on how much human curation time is actually needed to keep quality high</li>
+<li>The “not RAG” framing may be a false dichotomy - hybrid approaches could combine both</li>
+</ul>
+<section class="backlinks-main"><h2>What links here</h2><ul><li><a class="wikilink" href="andrej-karpathy.html">Andrej Karpathy</a></li><li><a class="wikilink" href="index.html">Wiki Index</a></li><li><a class="wikilink" href="llm-wiki-pattern.html">LLM Wiki Pattern</a></li><li><a class="wikilink" href="llm-wikid.html">llm-wikid</a></li><li><a class="wikilink" href="obsidian.html">Obsidian</a></li><li><a class="wikilink" href="qmd.html">qmd</a></li><li><a class="wikilink" href="shann-holmberg.html">Shann Holmberg</a></li><li><a class="wikilink" href="tobi-lutke.html">Tobi Lutke</a></li></ul></section>
+</div>
+</div>
+</div>
+<script src="search.json.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

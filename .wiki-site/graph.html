@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Graph — Wikiwise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>body.page-graph { overflow: hidden; }
+.graph-layout { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; background: var(--bg); }
+.graph-root { position: relative; flex: 1 1 auto; min-width: 0; height: 100%; background: var(--bg); }
+#graph-canvas { width: 100%; height: 100%; position: relative; }
+.side-pane { flex: 0 0 0; width: 0; overflow: hidden; background: var(--surface); border-left: 1px solid var(--rule); display: flex; flex-direction: column; transition: flex-basis 0.32s cubic-bezier(.25,.8,.35,1), width 0.32s cubic-bezier(.25,.8,.35,1); }
+.graph-layout.open .side-pane { flex: 0 0 52%; width: 52%; }
+.side-pane-head { flex: 0 0 auto; height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 8px 0 16px; border-bottom: 1px solid var(--rule); font-family: var(--sans); font-size: 0.78rem; color: var(--muted); }
+.side-pane-head .side-title { text-transform: uppercase; letter-spacing: 0.12em; font-weight: 600; font-size: 0.62rem; }
+.side-pane-head .side-actions { display: flex; gap: 4px; }
+.side-pane-head button { background: none; border: 0; cursor: pointer; color: var(--muted); padding: 6px 10px; border-radius: 4px; font-family: var(--sans); font-size: 0.82rem; line-height: 1; transition: background 0.12s ease, color 0.12s ease; }
+.side-pane-head button:hover { background: var(--rule-soft); color: var(--ink); }
+.side-pane-head .close-btn { font-size: 1.2rem; padding: 4px 10px; }
+.side-pane iframe { flex: 1 1 auto; width: 100%; border: 0; background: var(--bg); }
+.graph-panel { position: absolute; background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; box-shadow: 0 8px 24px rgba(40, 30, 20, 0.08); font-family: var(--sans); font-size: 0.8rem; color: var(--ink); }
+.graph-legend { top: 18px; right: 18px; padding: 12px 14px; min-width: 180px; }
+.graph-legend h4 { margin: 0 0 8px; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); font-weight: 600; }
+.graph-legend ul { list-style: none; padding: 0; margin: 0; }
+.graph-legend li { display: flex; align-items: center; gap: 8px; margin: 4px 0; cursor: pointer; user-select: none; }
+.graph-legend li.dimmed { opacity: 0.35; }
+.graph-legend .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex: 0 0 auto; }
+.graph-legend .count { margin-left: auto; color: var(--muted); font-variant-numeric: tabular-nums; }
+.graph-help { bottom: 18px; left: 18px; padding: 8px 12px; color: var(--muted); font-size: 0.72rem; }
+.graph-stats { top: 18px; left: 18px; padding: 8px 12px; color: var(--muted); font-size: 0.72rem; font-variant-numeric: tabular-nums; }
+.graph-stats strong { color: var(--ink); font-weight: 600; }</style>
+</head>
+<body class="page-graph">
+<div class="map-nav-toggle" style="position:absolute;top:16px;left:50%;transform:translateX(-50%);z-index:10;display:flex;border:1px solid var(--rule);border-radius:4px;overflow:hidden;background:var(--surface);font-family:var(--sans);">
+  <a href="map.html" style="padding:6px 14px;font-size:0.72rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;border:none;border-right:1px solid var(--rule);">Map</a>
+  <a href="map-3d.html" style="padding:6px 14px;font-size:0.72rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;border:none;border-right:1px solid var(--rule);">3D</a>
+  <a href="graph.html" style="padding:6px 14px;font-size:0.72rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;border:none;background:var(--ink);color:var(--bg);">Classic</a>
+</div>
+<div class="graph-layout" id="graph-layout">
+  <div class="graph-root">
+    <div id="graph-canvas"></div>
+    <div class="graph-panel graph-stats" id="graph-stats"></div>
+    <div class="graph-panel graph-legend">
+      <h4>Categories</h4>
+      <ul id="legend-items"></ul>
+    </div>
+    <div class="graph-panel graph-help">scroll to zoom · drag to pan · click a node to preview · shift-click to open</div>
+  </div>
+  <aside class="side-pane" id="side-pane">
+    <header class="side-pane-head">
+      <span class="side-title" id="side-title"></span>
+      <div class="side-actions">
+        <button id="side-open" title="Open in full page">Open ↗</button>
+        <button id="side-close" class="close-btn" title="Close (Esc)">×</button>
+      </div>
+    </header>
+    <iframe id="side-frame" title="Page preview"></iframe>
+  </aside>
+</div>
+<script src="https://unpkg.com/d3@7/dist/d3.min.js"></script>
+<script src="https://unpkg.com/force-graph@1.49.0/dist/force-graph.min.js"></script>
+<script src="app.js"></script>
+<script>
+var GRAPH_COLORS = {"Meta":"#9a8a77","Source":"#c77a3c","Highlights":"#8d6ba3","Concept":"#4f8a6d","Discussion":"#4a7ca6"};
+var GRAPH_DATA = {"nodes":[{"id":"dashboard","label":"Wiki Dashboard","type":"Source","href":"dashboard.html","words":11,"val":1},{"id":"log","label":"Wiki Log","type":"Meta","href":"log.html","words":290,"val":1},{"id":"index","label":"Wiki Index","type":"Meta","href":"index.html","words":652,"val":40},{"id":"intentional-reading","label":"Intentional Reading","type":"Source","href":"intentional-reading.html","words":196,"val":10},{"id":"context-compression","label":"Context Compression","type":"Source","href":"context-compression.html","words":311,"val":13},{"id":"llm-wiki-pattern","label":"LLM Wiki Pattern","type":"Source","href":"llm-wiki-pattern.html","words":209,"val":14},{"id":"keyboard-driven-workflow","label":"Keyboard-Driven Workflow","type":"Source","href":"keyboard-driven-workflow.html","words":188,"val":14},{"id":"commonplace-practice","label":"Commonplace Practice","type":"Source","href":"commonplace-practice.html","words":176,"val":10},{"id":"compound-engineering","label":"Compound Engineering","type":"Source","href":"compound-engineering.html","words":156,"val":16},{"id":"knowledge-work-prs","label":"Knowledge Work PRs","type":"Source","href":"knowledge-work-prs.html","words":267,"val":13},{"id":"atomic-notes","label":"Atomic Notes","type":"Source","href":"atomic-notes.html","words":186,"val":14},{"id":"agentic-constitution","label":"Agentic Constitution","type":"Source","href":"agentic-constitution.html","words":359,"val":18},{"id":"folder-as-agent","label":"Folder-as-Agent Pattern","type":"Source","href":"folder-as-agent.html","words":390,"val":19},{"id":"yb-effect-2026-commonplace-practice","label":"YB - Build a Daily Commonplace Practice","type":"Source","href":"yb-effect-2026-commonplace-practice.html","words":549,"val":24},{"id":"newman-2026-claude-mem","label":"Alex Newman - Claude-Mem","type":"Source","href":"newman-2026-claude-mem.html","words":353,"val":9},{"id":"klaassen-2026-folder-is-the-agent","label":"Kieran Klaassen - The Folder Is the Agent","type":"Source","href":"klaassen-2026-folder-is-the-agent.html","words":597,"val":11},{"id":"terpstra-2026-keyboard-driven-mac-utilities","label":"Brett Terpstra - Keyboard-Driven Mac Utility List","type":"Source","href":"terpstra-2026-keyboard-driven-mac-utilities.html","words":495,"val":17},{"id":"shannhk-2026-llm-wikid-readme","label":"llm-wikid README - AI-Maintained Knowledge Base for Obsidian","type":"Source","href":"shannhk-2026-llm-wikid-readme.html","words":478,"val":14},{"id":"brussee-2026-caveman-compress","label":"Julius Brussee - Caveman Compress","type":"Source","href":"brussee-2026-caveman-compress.html","words":301,"val":8},{"id":"englert-2026-claude-cowork-tutorial","label":"JJ Englert - Claude Cowork Tutorial for Non-Engineers","type":"Source","href":"englert-2026-claude-cowork-tutorial.html","words":460,"val":11},{"id":"karabiner-elements","label":"Karabiner-Elements","type":"Source","href":"karabiner-elements.html","words":43,"val":12},{"id":"caveman-compress","label":"Caveman Compress","type":"Source","href":"caveman-compress.html","words":72,"val":10},{"id":"jj-englert","label":"JJ Englert","type":"Source","href":"jj-englert.html","words":65,"val":8},{"id":"llm-wikid","label":"llm-wikid","type":"Source","href":"llm-wikid.html","words":59,"val":11},{"id":"kagi","label":"Kagi","type":"Source","href":"kagi.html","words":28,"val":7},{"id":"tobi-lutke","label":"Tobi Lutke","type":"Source","href":"tobi-lutke.html","words":26,"val":5},{"id":"claude-mem","label":"Claude-Mem","type":"Source","href":"claude-mem.html","words":83,"val":10},{"id":"shann-holmberg","label":"Shann Holmberg","type":"Source","href":"shann-holmberg.html","words":24,"val":6},{"id":"obsidian","label":"Obsidian","type":"Source","href":"obsidian.html","words":112,"val":22},{"id":"paul-graham","label":"Paul Graham","type":"Source","href":"paul-graham.html","words":46,"val":6},{"id":"readwise","label":"Readwise","type":"Source","href":"readwise.html","words":60,"val":9},{"id":"brett-terpstra","label":"Brett Terpstra","type":"Source","href":"brett-terpstra.html","words":67,"val":17},{"id":"andy-matuschak","label":"Andy Matuschak","type":"Source","href":"andy-matuschak.html","words":64,"val":7},{"id":"kieran-klaassen","label":"Kieran Klaassen","type":"Source","href":"kieran-klaassen.html","words":84,"val":11},{"id":"bettertouchtool","label":"BetterTouchTool","type":"Source","href":"bettertouchtool.html","words":31,"val":10},{"id":"keyboard-maestro","label":"Keyboard Maestro","type":"Source","href":"keyboard-maestro.html","words":50,"val":10},{"id":"launchbar","label":"LaunchBar","type":"Source","href":"launchbar.html","words":48,"val":7},{"id":"cora","label":"Cora","type":"Source","href":"cora.html","words":27,"val":9},{"id":"claude-cowork","label":"Claude Cowork","type":"Source","href":"claude-cowork.html","words":152,"val":9},{"id":"vimium","label":"Vimium","type":"Source","href":"vimium.html","words":33,"val":9},{"id":"qmd","label":"qmd","type":"Source","href":"qmd.html","words":53,"val":8},{"id":"andrej-karpathy","label":"Andrej Karpathy","type":"Source","href":"andrej-karpathy.html","words":49,"val":9},{"id":"readme","label":"LLM Wikid","type":"Concept","href":"readme.html","words":142,"val":1},{"id":"concept","label":"{{title}}","type":"Source","href":"concept.html","words":16,"val":1},{"id":"entity","label":"{{title}}","type":"Source","href":"entity.html","words":12,"val":1},{"id":"source","label":"{{title}}","type":"Source","href":"source.html","words":11,"val":1},{"id":"synthesis","label":"{{title}}","type":"Source","href":"synthesis.html","words":6,"val":1},{"id":"project","label":"{{title}}","type":"Source","href":"project.html","words":6,"val":1},{"id":"output","label":"{{title}}","type":"Source","href":"output.html","words":4,"val":1},{"id":"sop","label":"{{title}}","type":"Source","href":"sop.html","words":6,"val":1},{"id":"claude","label":"claude","type":"Concept","href":"claude.html","words":264,"val":2}],"links":[{"source":"index","target":"shannhk-2026-llm-wikid-readme"},{"source":"index","target":"yb-effect-2026-commonplace-practice"},{"source":"index","target":"klaassen-2026-folder-is-the-agent"},{"source":"index","target":"terpstra-2026-keyboard-driven-mac-utilities"},{"source":"index","target":"englert-2026-claude-cowork-tutorial"},{"source":"index","target":"brussee-2026-caveman-compress"},{"source":"index","target":"newman-2026-claude-mem"},{"source":"index","target":"agentic-constitution"},{"source":"index","target":"atomic-notes"},{"source":"index","target":"commonplace-practice"},{"source":"index","target":"compound-engineering"},{"source":"index","target":"folder-as-agent"},{"source":"index","target":"intentional-reading"},{"source":"index","target":"keyboard-driven-workflow"},{"source":"index","target":"knowledge-work-prs"},{"source":"index","target":"context-compression"},{"source":"index","target":"llm-wiki-pattern"},{"source":"index","target":"andrej-karpathy"},{"source":"index","target":"andy-matuschak"},{"source":"index","target":"bettertouchtool"},{"source":"index","target":"brett-terpstra"},{"source":"index","target":"cora"},{"source":"index","target":"kagi"},{"source":"index","target":"karabiner-elements"},{"source":"index","target":"keyboard-maestro"},{"source":"index","target":"kieran-klaassen"},{"source":"index","target":"launchbar"},{"source":"index","target":"llm-wikid"},{"source":"index","target":"obsidian"},{"source":"index","target":"paul-graham"},{"source":"index","target":"qmd"},{"source":"index","target":"readwise"},{"source":"index","target":"shann-holmberg"},{"source":"index","target":"tobi-lutke"},{"source":"index","target":"caveman-compress"},{"source":"index","target":"claude-cowork"},{"source":"index","target":"claude-mem"},{"source":"index","target":"jj-englert"},{"source":"index","target":"vimium"},{"source":"intentional-reading","target":"yb-effect-2026-commonplace-practice"},{"source":"intentional-reading","target":"atomic-notes"},{"source":"intentional-reading","target":"readwise"},{"source":"intentional-reading","target":"obsidian"},{"source":"context-compression","target":"brussee-2026-caveman-compress"},{"source":"context-compression","target":"newman-2026-claude-mem"},{"source":"context-compression","target":"compound-engineering"},{"source":"context-compression","target":"caveman-compress"},{"source":"context-compression","target":"claude-mem"},{"source":"context-compression","target":"folder-as-agent"},{"source":"llm-wiki-pattern","target":"shannhk-2026-llm-wikid-readme"},{"source":"llm-wiki-pattern","target":"yb-effect-2026-commonplace-practice"},{"source":"llm-wiki-pattern","target":"andrej-karpathy"},{"source":"llm-wiki-pattern","target":"commonplace-practice"},{"source":"llm-wiki-pattern","target":"atomic-notes"},{"source":"keyboard-driven-workflow","target":"terpstra-2026-keyboard-driven-mac-utilities"},{"source":"keyboard-driven-workflow","target":"brett-terpstra"},{"source":"keyboard-driven-workflow","target":"karabiner-elements"},{"source":"keyboard-driven-workflow","target":"launchbar"},{"source":"keyboard-driven-workflow","target":"vimium"},{"source":"keyboard-driven-workflow","target":"kagi"},{"source":"keyboard-driven-workflow","target":"folder-as-agent"},{"source":"commonplace-practice","target":"yb-effect-2026-commonplace-practice"},{"source":"commonplace-practice","target":"obsidian"},{"source":"commonplace-practice","target":"llm-wiki-pattern"},{"source":"compound-engineering","target":"klaassen-2026-folder-is-the-agent"},{"source":"compound-engineering","target":"brussee-2026-caveman-compress"},{"source":"compound-engineering","target":"newman-2026-claude-mem"},{"source":"compound-engineering","target":"kieran-klaassen"},{"source":"compound-engineering","target":"folder-as-agent"},{"source":"compound-engineering","target":"context-compression"},{"source":"compound-engineering","target":"caveman-compress"},{"source":"compound-engineering","target":"claude-mem"},{"source":"knowledge-work-prs","target":"yb-effect-2026-commonplace-practice"},{"source":"knowledge-work-prs","target":"obsidian"},{"source":"knowledge-work-prs","target":"commonplace-practice"},{"source":"knowledge-work-prs","target":"atomic-notes"},{"source":"knowledge-work-prs","target":"intentional-reading"},{"source":"knowledge-work-prs","target":"agentic-constitution"},{"source":"knowledge-work-prs","target":"kieran-klaassen"},{"source":"knowledge-work-prs","target":"folder-as-agent"},{"source":"atomic-notes","target":"yb-effect-2026-commonplace-practice"},{"source":"atomic-notes","target":"andy-matuschak"},{"source":"atomic-notes","target":"commonplace-practice"},{"source":"atomic-notes","target":"paul-graham"},{"source":"agentic-constitution","target":"yb-effect-2026-commonplace-practice"},{"source":"agentic-constitution","target":"klaassen-2026-folder-is-the-agent"},{"source":"agentic-constitution","target":"englert-2026-claude-cowork-tutorial"},{"source":"agentic-constitution","target":"obsidian"},{"source":"agentic-constitution","target":"knowledge-work-prs"},{"source":"agentic-constitution","target":"kieran-klaassen"},{"source":"agentic-constitution","target":"jj-englert"},{"source":"agentic-constitution","target":"claude-cowork"},{"source":"folder-as-agent","target":"klaassen-2026-folder-is-the-agent"},{"source":"folder-as-agent","target":"englert-2026-claude-cowork-tutorial"},{"source":"folder-as-agent","target":"kieran-klaassen"},{"source":"folder-as-agent","target":"cora"},{"source":"folder-as-agent","target":"agentic-constitution"},{"source":"folder-as-agent","target":"llm-wiki-pattern"},{"source":"folder-as-agent","target":"compound-engineering"},{"source":"folder-as-agent","target":"jj-englert"},{"source":"folder-as-agent","target":"claude-cowork"},{"source":"yb-effect-2026-commonplace-practice","target":"obsidian"},{"source":"yb-effect-2026-commonplace-practice","target":"readwise"},{"source":"yb-effect-2026-commonplace-practice","target":"andrej-karpathy"},{"source":"yb-effect-2026-commonplace-practice","target":"llm-wiki-pattern"},{"source":"yb-effect-2026-commonplace-practice","target":"commonplace-practice"},{"source":"yb-effect-2026-commonplace-practice","target":"atomic-notes"},{"source":"yb-effect-2026-commonplace-practice","target":"andy-matuschak"},{"source":"yb-effect-2026-commonplace-practice","target":"paul-graham"},{"source":"yb-effect-2026-commonplace-practice","target":"intentional-reading"},{"source":"yb-effect-2026-commonplace-practice","target":"agentic-constitution"},{"source":"yb-effect-2026-commonplace-practice","target":"knowledge-work-prs"},{"source":"newman-2026-claude-mem","target":"claude-mem"},{"source":"newman-2026-claude-mem","target":"context-compression"},{"source":"newman-2026-claude-mem","target":"caveman-compress"},{"source":"newman-2026-claude-mem","target":"compound-engineering"},{"source":"klaassen-2026-folder-is-the-agent","target":"cora"},{"source":"klaassen-2026-folder-is-the-agent","target":"compound-engineering"},{"source":"klaassen-2026-folder-is-the-agent","target":"claude"},{"source":"klaassen-2026-folder-is-the-agent","target":"agentic-constitution"},{"source":"terpstra-2026-keyboard-driven-mac-utilities","target":"brett-terpstra"},{"source":"terpstra-2026-keyboard-driven-mac-utilities","target":"bettertouchtool"},{"source":"terpstra-2026-keyboard-driven-mac-utilities","target":"karabiner-elements"},{"source":"terpstra-2026-keyboard-driven-mac-utilities","target":"keyboard-maestro"},{"source":"terpstra-2026-keyboard-driven-mac-utilities","target":"launchbar"},{"source":"terpstra-2026-keyboard-driven-mac-utilities","target":"vimium"},{"source":"terpstra-2026-keyboard-driven-mac-utilities","target":"kagi"},{"source":"shannhk-2026-llm-wikid-readme","target":"shann-holmberg"},{"source":"shannhk-2026-llm-wikid-readme","target":"andrej-karpathy"},{"source":"shannhk-2026-llm-wikid-readme","target":"llm-wiki-pattern"},{"source":"shannhk-2026-llm-wikid-readme","target":"qmd"},{"source":"shannhk-2026-llm-wikid-readme","target":"obsidian"},{"source":"brussee-2026-caveman-compress","target":"caveman-compress"},{"source":"brussee-2026-caveman-compress","target":"context-compression"},{"source":"brussee-2026-caveman-compress","target":"claude-mem"},{"source":"englert-2026-claude-cowork-tutorial","target":"jj-englert"},{"source":"englert-2026-claude-cowork-tutorial","target":"claude-cowork"},{"source":"englert-2026-claude-cowork-tutorial","target":"agentic-constitution"},{"source":"englert-2026-claude-cowork-tutorial","target":"folder-as-agent"},{"source":"englert-2026-claude-cowork-tutorial","target":"obsidian"},{"source":"karabiner-elements","target":"terpstra-2026-keyboard-driven-mac-utilities"},{"source":"karabiner-elements","target":"brett-terpstra"},{"source":"karabiner-elements","target":"keyboard-driven-workflow"},{"source":"karabiner-elements","target":"bettertouchtool"},{"source":"karabiner-elements","target":"keyboard-maestro"},{"source":"caveman-compress","target":"brussee-2026-caveman-compress"},{"source":"caveman-compress","target":"context-compression"},{"source":"caveman-compress","target":"claude-mem"},{"source":"jj-englert","target":"englert-2026-claude-cowork-tutorial"},{"source":"jj-englert","target":"claude-cowork"},{"source":"jj-englert","target":"agentic-constitution"},{"source":"llm-wikid","target":"shannhk-2026-llm-wikid-readme"},{"source":"llm-wikid","target":"shann-holmberg"},{"source":"llm-wikid","target":"andrej-karpathy"},{"source":"llm-wikid","target":"llm-wiki-pattern"},{"source":"llm-wikid","target":"obsidian"},{"source":"llm-wikid","target":"qmd"},{"source":"kagi","target":"terpstra-2026-keyboard-driven-mac-utilities"},{"source":"kagi","target":"brett-terpstra"},{"source":"kagi","target":"vimium"},{"source":"tobi-lutke","target":"shannhk-2026-llm-wikid-readme"},{"source":"tobi-lutke","target":"qmd"},{"source":"claude-mem","target":"newman-2026-claude-mem"},{"source":"claude-mem","target":"context-compression"},{"source":"claude-mem","target":"caveman-compress"},{"source":"shann-holmberg","target":"shannhk-2026-llm-wikid-readme"},{"source":"shann-holmberg","target":"llm-wikid"},{"source":"obsidian","target":"shannhk-2026-llm-wikid-readme"},{"source":"obsidian","target":"yb-effect-2026-commonplace-practice"},{"source":"obsidian","target":"llm-wikid"},{"source":"obsidian","target":"readwise"},{"source":"obsidian","target":"commonplace-practice"},{"source":"obsidian","target":"atomic-notes"},{"source":"obsidian","target":"intentional-reading"},{"source":"obsidian","target":"agentic-constitution"},{"source":"obsidian","target":"knowledge-work-prs"},{"source":"obsidian","target":"llm-wiki-pattern"},{"source":"paul-graham","target":"yb-effect-2026-commonplace-practice"},{"source":"paul-graham","target":"atomic-notes"},{"source":"readwise","target":"yb-effect-2026-commonplace-practice"},{"source":"readwise","target":"obsidian"},{"source":"readwise","target":"atomic-notes"},{"source":"readwise","target":"intentional-reading"},{"source":"brett-terpstra","target":"terpstra-2026-keyboard-driven-mac-utilities"},{"source":"brett-terpstra","target":"karabiner-elements"},{"source":"brett-terpstra","target":"keyboard-driven-workflow"},{"source":"brett-terpstra","target":"launchbar"},{"source":"brett-terpstra","target":"keyboard-maestro"},{"source":"brett-terpstra","target":"bettertouchtool"},{"source":"brett-terpstra","target":"vimium"},{"source":"andy-matuschak","target":"yb-effect-2026-commonplace-practice"},{"source":"andy-matuschak","target":"atomic-notes"},{"source":"andy-matuschak","target":"obsidian"},{"source":"kieran-klaassen","target":"klaassen-2026-folder-is-the-agent"},{"source":"kieran-klaassen","target":"cora"},{"source":"kieran-klaassen","target":"compound-engineering"},{"source":"kieran-klaassen","target":"folder-as-agent"},{"source":"bettertouchtool","target":"terpstra-2026-keyboard-driven-mac-utilities"},{"source":"bettertouchtool","target":"brett-terpstra"},{"source":"bettertouchtool","target":"keyboard-driven-workflow"},{"source":"bettertouchtool","target":"karabiner-elements"},{"source":"bettertouchtool","target":"keyboard-maestro"},{"source":"keyboard-maestro","target":"terpstra-2026-keyboard-driven-mac-utilities"},{"source":"keyboard-maestro","target":"brett-terpstra"},{"source":"keyboard-maestro","target":"keyboard-driven-workflow"},{"source":"keyboard-maestro","target":"karabiner-elements"},{"source":"launchbar","target":"terpstra-2026-keyboard-driven-mac-utilities"},{"source":"launchbar","target":"brett-terpstra"},{"source":"cora","target":"klaassen-2026-folder-is-the-agent"},{"source":"cora","target":"kieran-klaassen"},{"source":"cora","target":"folder-as-agent"},{"source":"cora","target":"compound-engineering"},{"source":"claude-cowork","target":"englert-2026-claude-cowork-tutorial"},{"source":"claude-cowork","target":"folder-as-agent"},{"source":"claude-cowork","target":"agentic-constitution"},{"source":"vimium","target":"terpstra-2026-keyboard-driven-mac-utilities"},{"source":"vimium","target":"brett-terpstra"},{"source":"vimium","target":"keyboard-driven-workflow"},{"source":"qmd","target":"shannhk-2026-llm-wikid-readme"},{"source":"qmd","target":"tobi-lutke"},{"source":"qmd","target":"llm-wikid"},{"source":"andrej-karpathy","target":"shannhk-2026-llm-wikid-readme"},{"source":"andrej-karpathy","target":"yb-effect-2026-commonplace-practice"},{"source":"andrej-karpathy","target":"llm-wiki-pattern"}]};
+</script>
+<script>// Wikiwise graph visualization — force-directed with D3 + force-graph.
+// Injected variables: GRAPH_DATA (inline JSON), GRAPH_COLORS (color map)
+(function () {
+  var COLORS = GRAPH_COLORS;
+
+  // ---- Color utilities ----
+  function hexToRgb(hex) {
+    var digits = hex.replace('#', '');
+    return {
+      r: parseInt(digits.slice(0, 2), 16),
+      g: parseInt(digits.slice(2, 4), 16),
+      b: parseInt(digits.slice(4, 6), 16)
+    };
+  }
+
+  var rgbByType = {};
+  for (var colorKey in COLORS) rgbByType[colorKey] = hexToRgb(COLORS[colorKey]);
+
+  function rgba(type, alpha) {
+    var rgb = rgbByType[type] || { r: 150, g: 150, b: 150 };
+    return 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',' + alpha + ')';
+  }
+
+  function nodeRadius(node) {
+    return 3 + Math.log(1 + (node.val || 1)) * 2.6;
+  }
+
+  // ---- Initialize graph ----
+  var data = GRAPH_DATA;
+  var allNodes = data.nodes.map(function(node) { return Object.assign({}, node); });
+  var allLinks = data.links.map(function(link) { return Object.assign({}, link); });
+
+  // Build neighbor index for hover highlighting
+  var neighborSets = new Map();
+  allNodes.forEach(function(node) { neighborSets.set(node.id, new Set()); });
+  allLinks.forEach(function(link) {
+    neighborSets.get(link.source).add(link.target);
+    neighborSets.get(link.target).add(link.source);
+  });
+
+  var canvasEl = document.getElementById('graph-canvas');
+  var hoveredNodeId = null;
+  var bgColor = (getComputedStyle(document.documentElement)
+    .getPropertyValue('--bg') || '#fbfaf5').trim();
+
+  function isNeighborOf(nodeA, nodeB) {
+    if (nodeA === nodeB) return true;
+    var set = neighborSets.get(nodeA);
+    return set ? set.has(nodeB) : false;
+  }
+
+  // ---- Render graph ----
+  var graph = ForceGraph()(canvasEl)
+    .graphData({ nodes: allNodes, links: allLinks })
+    .backgroundColor(bgColor)
+    .nodeRelSize(1)
+    .nodeVal(function(node) { return Math.pow(nodeRadius(node), 2); })
+    .nodeLabel(function() { return ''; })
+    .autoPauseRedraw(false)
+    .linkColor(function(link) {
+      var sourceId = typeof link.source === 'object' ? link.source.id : link.source;
+      var targetId = typeof link.target === 'object' ? link.target.id : link.target;
+      if (!hoveredNodeId) return 'rgba(120, 105, 85, 0.13)';
+      if (sourceId === hoveredNodeId || targetId === hoveredNodeId) return 'rgba(80, 65, 50, 0.55)';
+      return 'rgba(120, 105, 85, 0.04)';
+    })
+    .linkWidth(function(link) {
+      var sourceId = typeof link.source === 'object' ? link.source.id : link.source;
+      var targetId = typeof link.target === 'object' ? link.target.id : link.target;
+      return (hoveredNodeId && (sourceId === hoveredNodeId || targetId === hoveredNodeId)) ? 1.4 : 0.5;
+    })
+    .onNodeHover(function(node) {
+      hoveredNodeId = node ? node.id : null;
+      canvasEl.style.cursor = node ? 'pointer' : '';
+    })
+    .onNodeClick(function(node, event) {
+      if (event && event.shiftKey) { window.location = node.href; return; }
+      openSidePane(node);
+    })
+    .onBackgroundClick(function() { hoveredNodeId = null; })
+    .nodeCanvasObjectMode(function() { return 'replace'; })
+    .nodeCanvasObject(renderNode);
+
+  function renderNode(node, ctx, scale) {
+    if (!Number.isFinite(node.x) || !Number.isFinite(node.y)) return;
+
+    var radius = nodeRadius(node);
+    var isFocused = !hoveredNodeId || isNeighborOf(hoveredNodeId, node.id);
+    var baseAlpha = isFocused ? 0.92 : 0.14;
+
+    // Outer halo glow
+    var haloRadius = radius * (isFocused && hoveredNodeId === node.id ? 3.2 : 2.1);
+    var haloGrad = ctx.createRadialGradient(node.x, node.y, radius * 0.6, node.x, node.y, haloRadius);
+    haloGrad.addColorStop(0, rgba(node.type, isFocused ? 0.28 : 0.04));
+    haloGrad.addColorStop(1, rgba(node.type, 0));
+    ctx.beginPath();
+    ctx.arc(node.x, node.y, haloRadius, 0, 2 * Math.PI);
+    ctx.fillStyle = haloGrad;
+    ctx.fill();
+
+    // Node body with radial gradient
+    var bodyGrad = ctx.createRadialGradient(
+      node.x - radius * 0.35, node.y - radius * 0.35, radius * 0.1,
+      node.x, node.y, radius
+    );
+    bodyGrad.addColorStop(0, rgba(node.type, Math.min(1, baseAlpha + 0.06)));
+    bodyGrad.addColorStop(1, rgba(node.type, baseAlpha));
+    ctx.beginPath();
+    ctx.arc(node.x, node.y, radius, 0, 2 * Math.PI);
+    ctx.fillStyle = bodyGrad;
+    ctx.fill();
+
+    // Hairline stroke
+    ctx.lineWidth = 0.8 / scale;
+    ctx.strokeStyle = rgba(node.type, isFocused ? 0.65 : 0.12);
+    ctx.stroke();
+
+    // Label visibility: show neighbors when hovering, all labels at high zoom
+    var isHovered = node.id === hoveredNodeId;
+    var isNeighborOfHovered = hoveredNodeId && neighborSets.get(hoveredNodeId).has(node.id);
+    var showLabel = hoveredNodeId ? (isHovered || isNeighborOfHovered) : (scale >= 1.3);
+    if (!showLabel) return;
+
+    var fontSize = Math.max(3, (isHovered ? 12 : 10) / scale);
+    ctx.font = (isHovered ? '600 ' : '') + fontSize + 'px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+
+    // White outline for readability
+    ctx.lineWidth = (isHovered ? 3.2 : 2.4) / scale;
+    ctx.strokeStyle = 'rgba(251, 250, 245, 0.9)';
+    ctx.strokeText(node.label, node.x, node.y + radius + 2);
+
+    ctx.fillStyle = isHovered ? 'rgba(26, 22, 18, 1)'
+      : (isNeighborOfHovered ? 'rgba(26, 22, 18, 0.92)' : 'rgba(26, 22, 18, 0.75)');
+    ctx.fillText(node.label, node.x, node.y + radius + 2);
+  }
+
+  // Clear hover when mouse leaves canvas
+  canvasEl.addEventListener('mouseleave', function() {
+    hoveredNodeId = null;
+    canvasEl.style.cursor = '';
+  });
+
+  // ---- Force tuning ----
+  graph.d3Force('charge').strength(-420).distanceMax(520);
+  graph.d3Force('link')
+    .distance(function(link) {
+      var sourceVal = (link.source && link.source.val) || 1;
+      var targetVal = (link.target && link.target.val) || 1;
+      return 60 + Math.max(sourceVal, targetVal) * 0.35;
+    })
+    .strength(0.35);
+  graph.d3Force('collide', d3.forceCollide()
+    .radius(function(node) { return nodeRadius(node) + 6; })
+    .strength(1).iterations(3));
+  graph.d3Force('x', d3.forceX(0).strength(0.04));
+  graph.d3Force('y', d3.forceY(0).strength(0.04));
+  graph.cooldownTicks(250).d3AlphaDecay(0.02).warmupTicks(20);
+
+  // ---- Legend with category filtering ----
+  var legendEl = document.getElementById('legend-items');
+  var activeCategories = {};
+  for (var categoryName in COLORS) activeCategories[categoryName] = true;
+
+  var categoryCounts = {};
+  allNodes.forEach(function(node) { categoryCounts[node.type] = (categoryCounts[node.type] || 0) + 1; });
+
+  function applyFilter() {
+    var visibleIds = {};
+    allNodes.forEach(function(node) { if (activeCategories[node.type]) visibleIds[node.id] = true; });
+    graph.graphData({
+      nodes: allNodes.filter(function(node) { return visibleIds[node.id]; }),
+      links: data.links
+        .filter(function(link) { return visibleIds[link.source] && visibleIds[link.target]; })
+        .map(function(link) { return Object.assign({}, link); })
+    });
+  }
+
+  Object.keys(COLORS).forEach(function(type) {
+    if (!categoryCounts[type]) return;
+    var li = document.createElement('li');
+    li.innerHTML =
+      '<span class="dot" style="background:' + COLORS[type] + '"></span>' +
+      '<span>' + type + '</span>' +
+      '<span class="count">' + categoryCounts[type] + '</span>';
+    li.addEventListener('click', function() {
+      if (activeCategories[type]) delete activeCategories[type];
+      else activeCategories[type] = true;
+      li.classList.toggle('dimmed', !activeCategories[type]);
+      applyFilter();
+    });
+    legendEl.appendChild(li);
+  });
+
+  document.getElementById('graph-stats').innerHTML =
+    '<strong>' + allNodes.length + '</strong> pages \u00b7 ' +
+    '<strong>' + allLinks.length + '</strong> links';
+
+  // ---- Responsive sizing ----
+  var graphRootEl = document.querySelector('.graph-root');
+  var graphLayoutEl = document.getElementById('graph-layout');
+  var mastheadEl = document.querySelector('.masthead');
+
+  function syncLayoutOffset() {
+    var mastheadHeight = mastheadEl ? mastheadEl.getBoundingClientRect().height : 61;
+    graphLayoutEl.style.top = mastheadHeight + 'px';
+    graphLayoutEl.style.height = 'calc(100vh - ' + mastheadHeight + 'px)';
+  }
+
+  function resizeCanvas() {
+    syncLayoutOffset();
+    var width = graphRootEl.clientWidth;
+    var height = graphRootEl.clientHeight;
+    if (width > 0 && height > 0) graph.width(width).height(height);
+  }
+
+  syncLayoutOffset();
+  resizeCanvas();
+
+  if (window.ResizeObserver) {
+    new ResizeObserver(resizeCanvas).observe(graphRootEl);
+  } else {
+    window.addEventListener('resize', resizeCanvas);
+  }
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'visible') resizeCanvas();
+  });
+
+  // ---- Side pane (article preview on node click) ----
+  var layoutEl = document.getElementById('graph-layout');
+  var sideFrame = document.getElementById('side-frame');
+  var sideTitleEl = document.getElementById('side-title');
+  var currentPreviewHref = null;
+
+  var PREVIEW_CSS = [
+    '.masthead, .rail, .toc-block, .backlinks-main, .article-foot { display: none !important }',
+    '.layout { display: block !important; padding: 0 !important; margin: 0 !important; max-width: none !important }',
+    '.article { max-width: none !important; width: auto !important; padding: 1.4rem 2rem 3rem !important; margin: 0 !important }',
+    '.article-head { margin-top: 0 !important }',
+    '.article-title { margin-top: 0 !important }',
+    'body { padding: 0 !important; margin: 0 !important; background: var(--bg) !important }',
+    'html { overflow-x: hidden }'
+  ].join('\n');
+
+  function applyPreviewStyles() {
+    try {
+      var doc = sideFrame.contentDocument;
+      if (!doc) return;
+      var styleEl = doc.getElementById('wikiwise-preview-style');
+      if (!styleEl) {
+        styleEl = doc.createElement('style');
+        styleEl.id = 'wikiwise-preview-style';
+        doc.head.appendChild(styleEl);
+      }
+      styleEl.textContent = PREVIEW_CSS;
+    } catch (_) {}
+  }
+
+  sideFrame.addEventListener('load', applyPreviewStyles);
+
+  function openSidePane(node) {
+    currentPreviewHref = node.href;
+    sideTitleEl.textContent = node.type;
+    sideFrame.src = node.href;
+    layoutEl.classList.add('open');
+    graph.d3ReheatSimulation();
+  }
+
+  function closeSidePane() {
+    layoutEl.classList.remove('open');
+    currentPreviewHref = null;
+    setTimeout(function() {
+      if (!layoutEl.classList.contains('open')) sideFrame.src = 'about:blank';
+    }, 350);
+    graph.d3ReheatSimulation();
+  }
+
+  document.getElementById('side-close').addEventListener('click', closeSidePane);
+  document.getElementById('side-open').addEventListener('click', function() {
+    if (currentPreviewHref) window.location = currentPreviewHref;
+  });
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' && layoutEl.classList.contains('open')) closeSidePane();
+  });
+})();
+</script>
+</body>
+</html>

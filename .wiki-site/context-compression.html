@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Context Compression — Wikiwise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="page-context-compression">
+<header class="masthead">
+  <a class="masthead-mark" href="home.html">
+    <span class="masthead-mark-letter">W</span>
+    <span class="masthead-mark-words">
+      <span class="masthead-mark-word-primary">Wikiwise</span>
+    </span>
+  </a>
+  <div class="masthead-search">
+    <input id="search-input" type="search" placeholder="Search Wikiwise…" autocomplete="off">
+    <div id="search-results"></div>
+  </div>
+</header>
+<div class="layout">
+<aside class="rail">
+<nav class="rail-nav"><h4>Navigate</h4><ul><li><a href="home.html">Home</a></li><li><a href="index.html">Catalog</a></li><li><a href="map-3d.html">Map</a></li><li><a href="log.html">Recent changes</a></li></ul></nav>
+<section class="toc-block"><h4>Contents</h4><div class="toc"><ul><li><a href="#two-approaches">Two Approaches</a></li><ul><li><a href="#file-level-compression">File-level compression</a></li><li><a href="#retrieval-level-compression-progressive-disclosure">Retrieval-level compression (progressive disclosure)</a></li></ul><li><a href="#why-it-matters">Why It Matters</a></li><li><a href="#counter-arguments">Counter-arguments</a></li><li><a href="#data-gaps">Data gaps</a></li></ul></div></section>
+</aside>
+<div class="article">
+<div class="article-head">
+  <h1 class="article-title">Context Compression</h1>
+<div class="article-subtitle">concept</div>
+</div>
+<div class="article-body">
+<table class="infobox"><caption>Source</caption><tr><th>tldr</th><td>&quot;Strategies to reduce token costs of persistent LLM context. Two approaches: compress the files (caveman-compress, ~46% reduction) or retrieve selectively (claude-mem, ~10x savings).&quot;</td></tr><tr><th>date_created</th><td>2026-04-14</td></tr><tr><th>date_modified</th><td>2026-04-14</td></tr><tr><th>tags</th><td>[token-optimization, context-compression, ai-tools, cost-reduction]</td></tr><tr><th>sources</th><td>[&quot;[[brussee-2026-caveman-compress]]&quot;, &quot;[[newman-2026-claude-mem]]&quot;]</td></tr><tr><th>explored</th><td>false</td></tr><tr><th>confidence</th><td>medium</td></tr></table><p>Strategies for reducing the token cost of persistent context in LLM agent workflows. As projects accumulate context files (<a href="http://CLAUDE.md" target="_blank" rel="noopener">CLAUDE.md</a>, memory, documentation), token consumption grows with every session. Context compression addresses this without sacrificing the benefits of <a class="wikilink" data-slug="compound-engineering" href="compound-engineering.html">compound-engineering</a>.</p>
+<h2 id="two-approaches">Two Approaches</h2>
+<h3 id="file-level-compression">File-level compression</h3>
+<p>Rewrite context files into more concise language while preserving semantic meaning. <a class="wikilink" data-slug="caveman-compress" href="caveman-compress.html">Caveman Compress</a> achieves ~46% token reduction by compressing <a href="http://CLAUDE.md" target="_blank" rel="noopener">CLAUDE.md</a> and memory files, preserving code blocks, URLs, and structural elements while condensing prose.</p>
+<p><strong>Tradeoff:</strong> Compressed files are harder for humans to read and maintain. The compression itself requires an API call.</p>
+<h3 id="retrieval-level-compression-progressive-disclosure">Retrieval-level compression (progressive disclosure)</h3>
+<p>Instead of loading all context at once, provide a layered retrieval system that surfaces only relevant context on demand. <a class="wikilink" data-slug="claude-mem" href="claude-mem.html">Claude-Mem</a> implements a 3-layer system (search → timeline → full details) claiming ~10x token savings.</p>
+<p><strong>Tradeoff:</strong> Requires running additional infrastructure (databases, HTTP services). Effectiveness depends on how selectively the agent actually retrieves.</p>
+<h2 id="why-it-matters">Why It Matters</h2>
+<p>Token costs are a direct function of context size. For practitioners running multiple <a class="wikilink" data-slug="folder-as-agent" href="folder-as-agent.html">folder-as-agent</a> projects with accumulated context, costs compound. A folder-agent with a rich <a href="http://CLAUDE.md" target="_blank" rel="noopener">CLAUDE.md</a>, documentation, and operational memory might consume thousands of tokens just for startup context before any actual work begins.</p>
+<p>Context compression is the efficiency counterpart to <a class="wikilink" data-slug="compound-engineering" href="compound-engineering.html">compound-engineering</a>: compound engineering says accumulate context for better results; context compression says manage that accumulated context efficiently.</p>
+<h2 id="counter-arguments">Counter-arguments</h2>
+<ul>
+<li>For small projects, the overhead of compression tools may exceed the savings</li>
+<li><a href="http://CLAUDE.md" target="_blank" rel="noopener">CLAUDE.md</a> files are typically small (1-3K tokens) - compressing them saves pennies</li>
+<li>The real cost driver is usually conversation length, not startup context</li>
+<li>“Just write concise <a href="http://CLAUDE.md" target="_blank" rel="noopener">CLAUDE.md</a> files” may be simpler than adding tooling</li>
+</ul>
+<h2 id="data-gaps">Data gaps</h2>
+<ul>
+<li>No head-to-head comparison of these two approaches on the same project</li>
+<li>No data on the crossover point where compression tools pay for themselves</li>
+<li>Unknown whether compressed context degrades agent performance vs full context</li>
+<li>Both tools are early-stage - no longitudinal usage data</li>
+</ul>
+<section class="backlinks-main"><h2>What links here</h2><ul><li><a class="wikilink" href="brussee-2026-caveman-compress.html">Julius Brussee - Caveman Compress</a></li><li><a class="wikilink" href="caveman-compress.html">Caveman Compress</a></li><li><a class="wikilink" href="claude-mem.html">Claude-Mem</a></li><li><a class="wikilink" href="compound-engineering.html">Compound Engineering</a></li><li><a class="wikilink" href="index.html">Wiki Index</a></li><li><a class="wikilink" href="newman-2026-claude-mem.html">Alex Newman - Claude-Mem</a></li></ul></section>
+</div>
+</div>
+</div>
+<script src="search.json.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
