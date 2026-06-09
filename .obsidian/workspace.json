@@ -11,13 +11,60 @@
             "id": "0eeb183ee23f89b2",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "AGENTS.md",
+                "mode": "preview",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "AGENTS"
+            }
+          },
+          {
+            "id": "42031fddb6b5cbde",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Untitled.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Untitled"
+            }
+          },
+          {
+            "id": "81a61d2a0baa7b22",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Untitled.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Untitled"
+            }
+          },
+          {
+            "id": "d422c992f061b982",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Untitled.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Untitled"
             }
           }
-        ]
+        ],
+        "currentTab": 3
       }
     ],
     "direction": "vertical"
@@ -49,7 +96,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "CONTEXT",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -74,7 +121,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 221.5
   },
   "right": {
     "id": "6dc63023c47ce134",
@@ -90,6 +137,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "commands/wiki-ingest.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -99,7 +147,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks"
+              "title": "Backlinks for wiki-ingest"
             }
           },
           {
@@ -108,11 +156,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "commands/wiki-ingest.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links"
+              "title": "Outgoing links from wiki-ingest"
             }
           },
           {
@@ -150,15 +199,17 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "commands/wiki-ingest.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline"
+              "title": "Outline of wiki-ingest"
             }
           }
-        ]
+        ],
+        "currentTab": 4
       }
     ],
     "direction": "horizontal",
@@ -179,43 +230,42 @@
       "bases:Create new base": false
     }
   },
-  "active": "008831c99fb00e0c",
+  "active": "d422c992f061b982",
   "lastOpenFiles": [
-    "templates/synthesis.md",
-    "templates/source.md",
-    "templates/sop.md",
-    "templates/project.md",
-    "templates/output.md",
-    "templates/entity.md",
-    "templates/concept.md",
-    "templates",
-    "commands/wiki-ingest.md",
-    "commands/wiki-query.md",
-    "commands/wiki-lint.md",
-    "commands/wiki-explore.md",
-    "commands",
+    "Untitled 1.md",
+    "Untitled.md",
+    "CONTEXT.md",
     "AGENTS.md",
+    "commands/wiki-query.md",
+    "config/templates/sop.md",
+    "config/templates/output.md",
+    "config/templates/project.md",
+    "config/templates/synthesis.md",
+    "config/templates/source.md",
+    "config/templates/entity.md",
+    "config/templates/concept.md",
+    "config/templates",
+    "config/sop.md",
+    "config/project.md",
+    "config/output.md",
+    "config/entity.md",
+    "config/concept.md",
+    "config/source.md",
+    "config/synthesis.md",
+    "config",
+    "Untitled 2.md",
+    "SOURCE",
+    "commands/wiki-lint.md",
+    "commands/wiki-ingest.md",
+    "commands/wiki-explore.md",
+    "wiki/index.md",
+    "Neuer Ordner",
+    "templates/output.md",
     "wiki/decisions/2026-06-09 three-layer-vault-fresh-start.md",
+    "commands",
     "wiki/decisions",
     "raw",
     "wiki/raw",
-    "wiki/Neuer Ordner",
-    "wiki",
-    "Neuer Ordner",
-    "carve out/raw/agent-instructions/better-touch-tool/base-system-prompt.md",
-    "carve out/raw/agent-instructions/better-touch-tool/floating-menu-and-widget-creator.md",
-    "carve out/raw/agent-instructions/better-touch-tool/dynamic-context.md",
-    "carve out/raw/agent-instructions/better-touch-tool/btt-expert.md",
-    "carve out/wiki/sops/better-touch-tool-ai-floating-menu-creator.md",
-    "carve out/wiki/sops/better-touch-tool-ai-expert-role.md",
-    "carve out/wiki/sops/better-touch-tool-ai-dynamic-context.md",
-    "carve out/wiki/sops/better-touch-tool-ai-base-prompt.md",
-    "carve out/wiki/entities/keyboard-maestro.md",
-    "carve out/wiki/entities/karabiner-elements.md",
-    "carve out/wiki/entities/better-touch-tool.md",
-    "carve out/wiki/concepts/better-touch-tool-ai-configuration-assistant.md",
-    "carve out/raw/assets/images",
-    "carve out/raw/agent-instructions/better-touch-tool",
-    "carve out/wiki/log.md"
+    "wiki/Neuer Ordner"
   ]
 }

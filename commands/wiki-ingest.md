@@ -1,60 +1,99 @@
 ---
-description: Process new raw sources into the wiki
-allowed-tools: Read, Write, Edit, Bash, Glob, Grep
+description: Compile unprocessed raw/ artifacts into wiki/ pages
+allowed-tools: Read, Write, Edit, Glob, Grep, mcp__qmd
 ---
 
-Read CLAUDE.md for all conventions and operations.
+Read CONTEXT.md and AGENTS.md before acting. Where they
+conflict, CONTEXT.md wins.
 
-Read wiki/index.md to understand existing coverage.
+# /wiki-ingest
 
-PHASE 0 - SORT CLIPPINGS:
-Check raw/clippings/ for new files. For each, detect the type from
-the source URL or content, then move to the correct subfolder:
-- X/Twitter URL -> raw/bookmarks/
-- YouTube URL -> raw/bookmarks/
-- Reddit URL -> raw/bookmarks/
-- Web article/blog -> raw/articles/
-- PDF -> raw/papers/
-- Plain text / idea / no URL -> raw/ideas/
-Remove from raw/clippings/ after moving.
+Compiles every `raw/` artifact that is not yet cited by any
+`wiki/` page into one or more `wiki/` pages.
 
-Then scan all of raw/ for unprocessed source files (any file not yet
-summarized in wiki/).
+## Scan
 
-PHASE 1 - RESOLVE:
-For each unprocessed source, detect if it contains a URL or unresolved reference.
-If so, fetch full content using the right tool and update the file in-place
-(preserving original URL in frontmatter):
-- YouTube URL (youtube.com, youtu.be): run yt-dlp to get transcript + metadata
-- X/Twitter URL (x.com, twitter.com): fetch via X API. If image attached, download to raw/assets/images/ with descriptive name and analyze content. If video attached, extract transcript via yt-dlp and download thumbnail.
-- Web URL / Reddit URL: scrape with scrapling
-- PDF file: read directly
-- Bookmark dump (list of URLs): parse each URL, create one file per URL in raw/, resolve each
-- Plain text / notes: already resolved, skip
+1. List all files in `raw/` (flat folder; no subfolders by
+   design — CONTEXT.md §`raw/`).
+2. Via qmd, list every `wiki/` page's `raw_sources:` field.
+3. The ingest set is `raw/` files whose filename appears in
+   no page's `raw_sources:`. Process each member of the
+   set in turn. If the set is empty, report "nothing to
+   ingest" and stop.
 
-PHASE 1.5 - MEDIA EXTRACTION:
-For any source with attached images or video:
-- Download images to raw/assets/images/ with descriptive kebab-case names
-- Analyze image content (diagrams, screenshots, infographics, data)
-- Extract video transcripts via yt-dlp --write-auto-sub --skip-download
-- Add media references to raw file frontmatter
-- Images often contain the actual information - capture the visual knowledge
+## Per artifact
 
-PHASE 2 - CLASSIFY & COMPILE:
-For each source (now containing full content + media):
-1. Classify the source type (transcript, paper, report, article, tweet, reddit, notes)
-2. Create a source summary in wiki/ using type-specific extraction (include image analysis and embeds)
-3. Identify concepts, entities, and projects mentioned
-4. Create new wiki pages for concepts appearing in 2+ sources
-5. Create stub pages for single-mention concepts
-6. Update existing pages by appending new information
-7. Add [[wikilinks]] to connect new content to existing pages
-8. Include Counter-arguments and Data gaps sections where required
-9. Update wiki/index.md with new entries and TLDRs
-10. Append to wiki/log.md with date, operation type, pages touched
+1. Read the `raw/` file. Do not modify it. Do not move it.
+   Do not rename it. `raw/` is human-curated and immutable
+   after entry (Integrity Rules 2, 3).
+2. Apply the read test and the relevance filter
+   (CONTEXT.md). Skip a candidate `wiki/` page if either
+   gate fails. Surface skipped candidates in the final
+   report so Tom can override.
+3. Identify the page types this artifact warrants:
+   - One `source` page (always — one artifact, one source
+     summary).
+   - Zero or more `concept` pages — only if the relevance
+     filter passes (2+ raw_sources covering the concept, or
+     explicit Tom-relevance evidenced in `raw/`).
+   - Zero or more `entity` pages — same filter.
+   - Other page types (`sop`, `decision`, `output`,
+     `synthesis`) are not produced by ingest. They are
+     authored deliberately via `/wiki-new-page`.
 
-Never leave a [[wikilink]] pointing to nothing - create stubs.
-Never rewrite existing pages from scratch - append and update.
+## Writing pages
 
-Report when done: sources processed, pages created, pages updated,
-cross-links added.
+For each page to create:
+
+1. Use the matching template from `.obsidian/templates/`:
+   `wiki-source.md`, `wiki-concept.md`, `wiki-entity.md`.
+   The template enforces the frontmatter contract; do not
+   hand-roll frontmatter.
+2. Frontmatter must satisfy AGENTS.md §Frontmatter for the
+   chosen type. `explored: false` always (Rule 4). The
+   ingested artifact's filename goes into `raw_sources:`.
+   `source` pages additionally require `source_url:`.
+3. Kebab-case slug. Place the file under
+   `wiki/<type>s/<slug>.md`. Path encodes type.
+4. Body in English (Rule 7). Translate from German on the
+   way in if needed.
+5. `[[wikilinks]]` only to pages that already exist or that
+   this run will create. No links into the void (Rule 6) —
+   if the relevance filter rejects a candidate, drop the
+   link rather than stubbing.
+
+## Updating existing pages
+
+If the artifact substantively extends a page that already
+exists:
+
+1. Append the artifact's filename to that page's
+   `raw_sources:`.
+2. Add or refine prose where the new artifact warrants it.
+   Append; do not rewrite.
+3. If the change is substantive, set `explored: false`.
+   Tom re-validates (Rule 4).
+
+## Out of scope
+
+- No writes to `raw/`. None. No sorting, no in-place edits,
+  no media extraction, no URL fetching, no asset downloads.
+  Ingest into `raw/` is Tom's hand only, mediated by his
+  `raw-*` templates.
+- No stub pages created solely to satisfy a wikilink.
+- No writes to `wiki/index.md` or `wiki/log.md` — neither
+  exists in this vault by design (CONTEXT.md §Meta-files).
+- No counter-arguments or data-gaps sections unless the
+  template defines them.
+
+## Report
+
+Chat-only output:
+
+- Artifacts processed (filename).
+- Pages created (path, type).
+- Pages updated (path, what was appended).
+- Wikilinks added.
+- Candidates rejected by the read test or relevance filter,
+  with the artifact and the proposed slug — so Tom can
+  override if a rejection was wrong.
