@@ -2,7 +2,7 @@
   "showRibbon": false,
   "accentColor": "#0090ff",
   "interfaceFontFamily": "Geist",
-  "cssTheme": "Minimal",
+  "cssTheme": "",
   "textFontFamily": "Geist",
   "monospaceFontFamily": "Geist Mono",
   "enabledCssSnippets": [
@@ -11,5 +11,6 @@
   "baseFontSize": 16,
   "nativeMenus": true,
   "translucency": false,
-  "theme": "obsidian"
+  "theme": "obsidian",
+  "showViewHeader": true
 }

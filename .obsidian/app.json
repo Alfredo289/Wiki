@@ -5,8 +5,9 @@
   "attachmentFolderPath": "raw/assets",
   "showInlineTitle": false,
   "alwaysUpdateLinks": true,
-  "propertiesInDocument": "source",
+  "propertiesInDocument": "visible",
   "userIgnoreFilters": [
     "templates/"
-  ]
+  ],
+  "showLineNumber": true
 }
