@@ -78,8 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 200
   },
   "right": {
     "id": "6dc63023c47ce134",
@@ -95,12 +94,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Untitled.base",
+                "file": "AGENTS.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from Untitled"
+              "title": "Outgoing links from AGENTS"
             }
           },
           {
@@ -166,13 +165,11 @@
               "title": "Backlinks for AGENTS"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
-    "width": 209.5,
-    "collapsed": true
+    "width": 209.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -190,10 +187,10 @@
   },
   "active": "6027e2700af10d0d",
   "lastOpenFiles": [
+    "AGENTS.md",
     "*.gitignore",
     "# See https---help.github.com-articles-ignoring-files- for (vscode-app).txt",
     "Untitled.base",
-    "AGENTS.md",
     "raw/clippings/Untitled.md",
     "raw/clippings/안녕.txt",
     "Untitled 8.base",
@@ -205,7 +202,6 @@
     "Untitled 4.base",
     "Funkraum.md",
     "Untitled.canvas",
-    "Untitled 3.base",
     "wiki/index.md",
     "Untitled/Untitled.md",
     "raw/(S+) Meinung Wim Wenders und Konstantin Wecker Die Mädchen von einst leiden noch immer 2.md",
