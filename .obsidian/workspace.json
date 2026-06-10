@@ -96,7 +96,7 @@
               "state": {
                 "file": "AGENTS.md",
                 "linksCollapsed": false,
-                "unlinkedCollapsed": true
+                "unlinkedCollapsed": false
               },
               "icon": "links-going-out",
               "title": "Outgoing links from AGENTS"
@@ -137,13 +137,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Untitled 4.base",
+                "file": "AGENTS.md",
                 "followCursor": false,
                 "showSearch": true,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of Untitled 4"
+              "title": "Outline of AGENTS"
             }
           },
           {
@@ -185,7 +185,7 @@
       "templater-obsidian:Templater": false
     }
   },
-  "active": "6027e2700af10d0d",
+  "active": "c8c0fac9a9b3cd91",
   "lastOpenFiles": [
     "AGENTS.md",
     "*.gitignore",
