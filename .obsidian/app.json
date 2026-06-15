@@ -1,6 +1,6 @@
 {
   "promptDelete": false,
-  "readableLineLength": true,
+  "readableLineLength": false,
   "showUnsupportedFiles": true,
   "attachmentFolderPath": "raw/assets",
   "showInlineTitle": false,
@@ -9,5 +9,5 @@
   "userIgnoreFilters": [
     "templates/"
   ],
-  "showLineNumber": true
+  "showLineNumber": false
 }

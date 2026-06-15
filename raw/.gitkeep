@@ -1,0 +1,3 @@
+# raw/ — immutable, human-curated substrate. FLAT: no subfolders (Integrity Rule 1).
+# Origin and format live in each file's frontmatter, never in the directory tree.
+# Only Tom writes or moves files here (Integrity Rule 2).

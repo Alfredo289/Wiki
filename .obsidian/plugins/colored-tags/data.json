@@ -9,7 +9,15 @@
   "accessibility": {
     "highTextContrast": false
   },
-  "knownTags": {},
+  "knownTags": {
+    "adr": 1,
+    "agents": 2,
+    "architecture": 3,
+    "dashboard": 4,
+    "llm": 5,
+    "meta": 6,
+    "vault": 7
+  },
   "tagColors": {},
   "_version": 4
 }

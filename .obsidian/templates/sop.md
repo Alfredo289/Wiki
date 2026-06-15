@@ -1,21 +1,20 @@
 ---
 title: ""
-tldr: ""
-date_created: {{date}}
-date_modified: {{date}}
 type: sop
-tags: []
-sources: []
+date: {{date}}
 explored: false
-confidence: medium
+tags: []
+confidence: 0.5
+raw_sources: []
+tools: []
 ---
 
 # {{title}}
 
-## When to Use
+## When to run
 
 ## Steps
 
 1.
 
-## Notes
+## After

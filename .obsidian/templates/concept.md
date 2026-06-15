@@ -1,22 +1,20 @@
 ---
 title: ""
-tldr: ""
-date_created: {{date}}
-date_modified: {{date}}
 type: concept
-tags: []
-sources: []
+date: {{date}}
 explored: false
-confidence: medium
+tags: []
+confidence: 0.5
+raw_sources: []
 ---
 
 # {{title}}
 
-[Lead section: 2-3 sentences defining this concept]
+[Lead section: 2–3 sentences defining this concept.]
 
-## Key Ideas
+## Key ideas
 
-## How It Connects
+## How it connects
 
 ## Counter-arguments
 

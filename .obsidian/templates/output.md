@@ -1,18 +1,17 @@
 ---
 title: ""
-tldr: ""
-date_created: {{date}}
-date_modified: {{date}}
 type: output
-tags: []
-query: ""
-sources: []
+date: {{date}}
 explored: false
-confidence: medium
+tags: []
+confidence: 0.5
+raw_sources: []
+wiki_sources: []
+query: ""
 ---
 
 # {{title}}
 
 ## Answer
 
-## Sources Consulted
+## Sources consulted

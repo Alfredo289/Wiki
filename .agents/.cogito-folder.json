@@ -1,0 +1,14 @@
+{
+  "browser" : {
+    "showMarkdownOnly" : true,
+    "sortDirection" : "ascending",
+    "sortField" : "name"
+  },
+  "media" : {
+    "destinationPreference" : {
+      "folderPath" : "raw\/assets",
+      "mode" : "custom"
+    }
+  },
+  "version" : 4
+}

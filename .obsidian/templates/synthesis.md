@@ -1,18 +1,17 @@
 ---
 title: ""
-tldr: ""
-date_created: {{date}}
-date_modified: {{date}}
 type: synthesis
-tags: []
-sources: []
+date: {{date}}
 explored: false
-confidence: medium
+tags: []
+confidence: 0.5
+wiki_sources: []
+raw_sources: []
 ---
 
 # {{title}}
 
-## Analysis
+## The shape
 
 ## Patterns
 

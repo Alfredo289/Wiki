@@ -1,21 +1,21 @@
 ---
 title: ""
-tldr: ""
-date_created: {{date}}
-date_modified: {{date}}
 type: source
+date: {{date}}
+explored: false
 tags: []
+confidence: 0.5
+raw_sources: []
+source_url: ""
 source_type: transcript | paper | report | article | notes
-source_file: "[[raw/filename]]"
+fetched: {{date}}
 ---
 
 # {{title}}
 
-## Summary
+## Argument
 
-## Key Takeaways
-
-## Concepts & Entities Mentioned
+## Key claims
 
 ## Counter-arguments
 

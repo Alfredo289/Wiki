@@ -1,13 +1,13 @@
 ---
+# NOTE: `project` is a working/PARA type, not one of the seven linted wiki
+# types. wiki-lint treats it leniently (no provenance requirement). Keep project
+# pages outside wiki/ or expect only advisory warnings.
 title: ""
-tldr: ""
-date_created: {{date}}
-date_modified: {{date}}
 type: project
-tags: []
-sources: []
+date: {{date}}
 explored: false
-confidence: medium
+tags: []
+confidence: 0.5
 status: active | paused | completed
 external_links: []
 ---
@@ -18,6 +18,6 @@ external_links: []
 
 ## Context
 
-## Key Decisions
+## Key decisions
 
 ## Related

@@ -1,79 +1,64 @@
-Sehr guter Ansatz. Wenn du eine Obsidian-Wiki nutzt, ist „alles indizieren“ oft genau der richtige Schritt, aber nur mit sauberer Pipeline, sonst wird es schnell unbrauchbar.
-
-## Pragmatisches Zielbild
-
-* **Rohdaten rein** (automatisiert, unverändert)
-* **Indexierung darüber** (Metadaten, Tags, Volltext)
-* **Kuratierte Wissensebene getrennt** (deine echten Notizen)
-
-So vermeidest du Chaos.
-
-## Empfohlene Struktur in Obsidian
-
-* `inbox`  
-    * ungefilterte Imports (Webseiten, RSS, PDFs)
-* `raw`  
-    * bereinigte, stabile Quellenkopien
-* `raw/assets/`  
-    * deine Synthesen, Evergreen Notes
-* `index.md; log.md; registry.md`  
-    * MOCs, Register, Suchseiten
-
-## Was du konkret für „gesamte Datenbank indizieren“ brauchst
-
-* Einheitliches Frontmatter in **allen** importierten Dateien:
-    * `title`, `url`, `source_name`, `captured`, `language`, `type`, `status`, `tags`
-* Ein fester Status-Flow:
-    * `inbox -> reviewed -> synthesized`
-* Ein globaler Tag-Standard:
-    * tagging anhand des Arts und des Inhaltes der Seite
-
-
-## Technischer Weg (einfach und robust)
-
-* Web-Content immer zuerst als Markdown speichern
-* URL-Cleanup direkt beim Import (Tracking-Parameter raus)
-* Pro Quelle eine eigene Source-Note mit RSS/Domain
-* Dann automatisiert:
-    * Volltextsuche (Obsidian Search)
-    * Property-basierte Filter (Dataview/Query)
-    * zentrale Index-Notizen (MOC)
-
-## Minimaler Start in 30 Minuten
-
-* 1 Template für Web-Importe (haben wir schon vorbereitet)
-* 1 Template für Quellen
-* 2 Indexseiten:
-    * `Index Quellen.md`
-    * `Index Themen.md`
-* Danach alle neuen Web-Dokumente strikt nur noch über diese Pipeline aufnehmen
-
-Wenn du willst, erstelle ich dir jetzt direkt die beiden Index-Dateien (`Index Quellen.md` + `Index Themen.md`) als copy-paste-Version, passend zu deinem RSS/Web-Workflow.
-
-
-
 ---
-Found live contradiction. Stop before editing — this is the grill.
+title: "AGENTS — operating rules for agents acting on this vault"
+type: schema
+date: 2026-06-10
+explored: false
+---
 
-**On disk now:**
+# AGENTS.md
 
-**The conflict.** Your `CONTEXT.md` (the doc every agent loads first, the "conceptual ground") says, verbatim:
+Operating rules for any agent (Claude, Cogito, qmd, a script) that acts on this
+vault. **Load order: `CONTEXT.md` → `learnings.md` → this file.** `CONTEXT.md` is
+the conceptual ground; this file is what you may and may not *do*.
 
-> `raw/` — **One flat folder** containing every curated source artifact. **No subfolders.** Origin and format are recorded in **frontmatter, not the directory structure.**
+## What you may do
 
-Plus integrity rule #1: _"Three layers, no fourth."_
+- Read everything in `raw/` and `wiki/`.
+- Compile `wiki/` pages from `raw/` artifacts under the frontmatter contract.
+- Propose captures: a kebab-case slug and complete frontmatter for items sitting
+  in `~/Inbox/`.
+- Run `wiki-lint` and report results.
+- Append a one-line entry to `log.md` after a writing session.
 
-Your instruction now puts `clippings/` +  **inside** `raw/`. That is subfolders in `raw/`. Direct breach of the flat-`raw/` decision.
+## What you may never do
 
-Two things are tangled here, separate them:
+- **Never write or move a file in `raw/`** (Integrity Rule 2). You propose; Tom
+  moves.
+- **Never set `explored: true`** (Integrity Rule 4). Every page you write or edit
+  keeps `explored: false`.
+- **Never add a fourth top-level layer or a subfolder inside `raw/`** (Rule 1).
+- **Never write a `wiki/` page that fails the read test, the relevance filter, or
+  provenance** (Rule 3). When in doubt, leave it in the substrate.
+- **Never create or hand-maintain `index.md` / `hot.md`** or any meta-file beyond
+  the append-only `log.md` and the live `dashboard.md`.
 
-**1. AGENTS.md is the wrong structure entirely.** It currently shows — the agent's old proposal. That's the _"wie sie sie uns gezeigt haben"_ you're rejecting. It matches neither CONTEXT.md nor your new instruction. Whole file needs rewrite to your model. Agreed?
+## Every `wiki/` page you write
 
-**2. What IS their fuckup/`?** This decides whether your flat-`raw/` rule survives or dies:
+- `explored: false`.
+- ≥ 2 `raw_sources` for `concept|entity|source|sop`; `wiki_sources` for
+  `synthesis|output`.
+- Provenance as `[[wikilinks]]` in the body, every link resolving to a real page.
+- Passes `wiki-lint` with zero errors before you declare it done.
 
-- **(A) Single drop-zone.** `clippings/` = where the Web Clipper dumps _all_ tool-imports regardless of format; `assets/` = its attachment sidecar. One operational folder, not one-per-format. Format still lives in frontmatter. Flat-`raw/` rule bends, doesn't break — amend it to _"no conceptual subfolders; tool-import drop-zones allowed."_
-- **(B) Web-specific folder.** Then PDFs get `raw/pdfs/`, audio gets `raw/audio/`… = format-as-folder. That **reverses** CONTEXT.md's explicit choice (format in frontmatter). Bigger decision, likely an ADR.
+## Skills (trimmed core set)
 
-**Recommend (A).** Keeps your three-layer model intact, just admits the clipper needs a physical target Obsidian can't fake with frontmatter.
+Use the smallest skill that does the job. The core set lives in
+`.claude/skills/` (see the implementation plan):
 
-Which — A or B? And confirm I rewrite AGENTS.md to your structure, not the old one.
+- **`wiki-lint`** — validate the frontmatter contract and Integrity Rules. Run
+  before declaring any write done.
+- **`capture-triage`** — turn a `~/Inbox/` item into a proposed slug + frontmatter
+  for Tom to file. Proposes only; never moves.
+- **`compile-wiki`** — compile `raw/` artifacts into a `wiki/` page under the
+  contract (read test, relevance filter, ≥2 sources, provenance, `explored:false`).
+
+## Logging
+
+After a session that wrote to `wiki/`, append **one line** to `log.md`:
+`YYYY-MM-DD — <what changed> — <pages touched>`. Append-only. Never reconcile or
+rewrite earlier entries; git is the history of record.
+
+## Definition of done
+
+A unit of work is done when: `wiki-lint` passes, provenance wikilinks resolve,
+`explored: false`, and (for a writing session) `log.md` has its one-line entry.
