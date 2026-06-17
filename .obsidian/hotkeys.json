@@ -66,14 +66,6 @@
       "key": "Tab"
     }
   ],
-  "file-explorer:open": [
-    {
-      "modifiers": [
-        "Mod"
-      ],
-      "key": "1"
-    }
-  ],
   "outline:open": [
     {
       "modifiers": [
@@ -106,14 +98,6 @@
         "Mod"
       ],
       "key": "5"
-    }
-  ],
-  "app:toggle-right-sidebar": [
-    {
-      "modifiers": [
-        "Mod"
-      ],
-      "key": "4"
     }
   ],
   "editor:set-heading-1": [
@@ -257,6 +241,30 @@
         "Shift"
       ],
       "key": "O"
+    }
+  ],
+  "properties:open-local": [
+    {
+      "modifiers": [
+        "Mod"
+      ],
+      "key": "1"
+    }
+  ],
+  "outgoing-links:open": [
+    {
+      "modifiers": [
+        "Mod"
+      ],
+      "key": "3"
+    }
+  ],
+  "backlink:open": [
+    {
+      "modifiers": [
+        "Mod"
+      ],
+      "key": "4"
     }
   ]
 }

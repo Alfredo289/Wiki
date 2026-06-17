@@ -5,7 +5,7 @@ date: 2026-06-10
 explored: false
 ---
 
-# CONTEXT.md
+## CONTEXT.md
 
 The first file any agent or tool loads. It defines what this vault **is** and the
 rules every layer obeys. It is conceptual ground — not a task list. Operating
@@ -20,30 +20,35 @@ notes folder" that erodes over time.
 
 | Layer | Folder | Who writes it | Mutability |
 |-------|--------|---------------|------------|
-| **Substrate** | `raw/` | Tom only | Immutable once filed |
+| **Substrate** | `raw/` | Tom (+ wiki-capture-triage on request) | Immutable once filed |
 | **Compiled wiki** | `wiki/` | Agent, validated by Tom | Rewritable |
 | **Schema** | `CONTEXT.md`, `AGENTS.md`, `learnings.md` | Tom (+ agent proposals) | Versioned |
 
-`raw/` is a **flat** folder of curated artifacts. Origin and format live in
-frontmatter, **not** in subfolders. `wiki/` is organised into type subfolders
-(`concepts/`, `entities/`, `sources/`, `sops/`, `decisions/`, `syntheses/`,
-`outputs/`).
+`raw/` holds curated artifacts under **`raw/clippings/`** — the capture target
+for Obsidian Web Clipper / Readwise — with image and file attachments in
+**`raw/clippings/assets/`**. That is the only nesting inside `raw/`; there are no
+per-topic or per-format subfolders. Origin and format live in frontmatter.
+`wiki/` is organised into type subfolders (`concepts/`, `entities/`, `sources/`,
+`sops/`, `decisions/`, `syntheses/`, `outputs/`).
 
 ## Integrity Rules
 
-1. **Three layers, no fourth.** No new top-level layer; no subfolders inside
-   `raw/`. Operational drop-zones for capture tools live *outside* the vault
-   (`~/Inbox/`), never as a fourth layer.
-2. **Only Tom writes `raw/`.** Agents may *propose* captures, slugs and
-   frontmatter, but only Tom moves a file into `raw/`. The proposer/curator
-   split is structural, not a guideline.
-3. **No claim without provenance.** Provenance is non-negotiable. Every `wiki/`
-   page traces back to named artifacts: substrate-derived pages (`concept`,
-   `entity`, `source`, `sop`) cite `raw_sources`; syntheses and outputs cite
-   `wiki_sources` **and/or** `raw_sources`. The ideal is **≥ 2** `raw_sources`; a
-   single source is allowed only with an explicit relevance justification in the
-   body. A page with no provenance is a defect. *(Exact rule-3 wording is
-   reconstructed from the source notes — confirm before treating as canonical.)*
+1. **Three layers, no fourth.** No new top-level layer. Inside `raw/` the only
+   structure is `raw/clippings/` for source artifacts and `raw/clippings/assets/`
+   for their attachments — no other subfolders.
+2. **Tom curates `raw/`.** What goes into `raw/` is Tom's call — he fills it with
+   the sources the wiki is built from. Agents never add to `raw/` on their own
+   initiative. The one exception is the **wiki-capture-triage** skill: when Tom invokes
+   it, it writes a note of the current conversation into `raw/clippings/`. No
+   other agent action ever creates, edits, or moves a file in `raw/`.
+3. **No claim without provenance — anchored once per source.** Each
+   `raw/clippings/` file is summarised by exactly one `source` page, and that
+   source page is the only page that cites `raw_sources`. Every other page type
+   (`concept`, `entity`, `sop`, `decision`, `synthesis`, `output`) traces back
+   through `wiki_sources` pointing at those source pages (and may add extra
+   `raw_sources` only with justification). The ideal is **≥ 2** sources; a single
+   source is allowed only with an explicit relevance justification in the body. A
+   page with no provenance is a defect.
 4. **The validation gate.** Agents always write `explored: false`. Only Tom
    flips it to `true`, and only after reading. `explored: true` introduced by an
    agent is a Rule 4 breach.
@@ -74,20 +79,25 @@ date: YYYY-MM-DD         # required
 explored: false          # required boolean; agent always false (Rule 4)
 tags: [ ... ]            # required, ≥1
 confidence: 0.0–1.0       # required number
-raw_sources: [ ... ]     # required for concept|entity|source|sop (ideally ≥2, Rule 3)
-wiki_sources: [ ... ]    # for synthesis|output (which use wiki_sources and/or raw_sources)
+raw_sources: [ ... ]     # required for `source` (its raw/clippings file); optional elsewhere
+wiki_sources: [ ... ]    # provenance for every non-source page → its source pages (Rule 3)
 provenanceState: merged | single | unverified   # optional
 # decisions only:
 status: active | superseded
 supersedes: [ ... ]
 # sops only:
 tools: [ "[[wikilink]]", ... ]
+# source only:
+source_url: string
+source_type: transcript | paper | report | article | notes
+fetched: YYYY-MM-DD
+# output only:
+query: string
 ```
 
-> Note: the Obsidian templates in `.obsidian/templates/` currently drift from
-> this contract (`confidence: medium` as a string, `date_created`/`date_modified`,
-> `sources`, `tldr`). The templates must be reconciled to this contract — see the
-> implementation plan.
+> The Obsidian templates in `.obsidian/templates/` match this contract: a number
+> for `confidence`, `date`, `raw_sources`/`wiki_sources`, and the type-specific
+> fields above. `wiki-lint` checks the required fields and ignores extra ones.
 
 ## The relevance filter and the read test
 
@@ -95,9 +105,10 @@ A `wiki/` page may exist only if **both** hold:
 
 - **Read test** — it is something Tom would deliberately open months later. If
   not, the content stays in the substrate or is not written at all.
-- **Relevance filter** — it is a current Tom-interest **and** backed by ≥ 2 raw
-  artifacts (or composed from existing wiki pages). A wikilink whose target is
-  neither is a "link into the void" and is linted.
+- **Relevance filter** — it is a current Tom-interest **and** has real
+  provenance: a `source` page summarises a raw artifact; every other page is
+  backed by ≥ 2 source pages (one only with justification). A wikilink whose
+  target is no real page is a "link into the void" and is linted.
 
 ## Navigation: no maintained `index.md`
 
@@ -108,8 +119,7 @@ collapse — every workflow grew an "and update the index" tail. Therefore:
   **Dataview** dashboard note (`dashboard.md`), authored once and rendered live.
 - **One `log.md` is permitted, append-only.** It is *only ever appended to* and
   never reconciled or summarised by hand. This is the single allowed exception to
-  the meta-file ban; it must be encoded as a decision page when `wiki/decisions/`
-  is built. The "what changed" history of record remains git.
+  the meta-file ban. The "what changed" history of record remains git.
 
 ## Page types
 

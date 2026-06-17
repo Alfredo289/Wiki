@@ -1,19 +1,23 @@
 {
   "command_timeout": 5,
-  "templates_folder": ".claude",
+  "templates_folder": "_templates",
   "templates_pairs": [
     [
       "",
       ""
     ]
   ],
-  "trigger_on_file_creation": false,
+  "trigger_on_file_creation": true,
   "auto_jump_to_cursor": false,
   "enable_system_commands": false,
   "shell_path": "",
   "user_scripts_folder": "",
   "enable_folder_templates": true,
   "folder_templates": [
+    {
+      "folder": "raw/clippings",
+      "template": "_templates/raw-own.md"
+    },
     {
       "folder": "",
       "template": ""
@@ -34,5 +38,10 @@
   "startup_templates": [
     ""
   ],
-  "intellisense_render": 1
+  "intellisense_render": 1,
+  "ignore_folders_on_creation": [
+    {
+      "folder": ""
+    }
+  ]
 }

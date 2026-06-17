@@ -1,11 +1,17 @@
 ---
-title: "OpenAI Codex"
+title: OpenAI Codex
 type: entity
 date: 2026-06-15
-explored: false
-tags: [codex, openai, coding-agent]
+explored: true
+tags:
+  - codex
+  - openai
+  - coding-agent
 confidence: 0.8
-wiki_sources: ["codex-plugin-build-docs"]
+wiki_sources:
+  - codex-plugin-build-docs
+  - shortcuts-playground-launch
+source_url: https://code.claude.com/docs/de/overview
 ---
 
 # OpenAI Codex
@@ -25,6 +31,10 @@ Tom uses Codex as a primary coding agent. The `.agents/` directory convention (`
 
 See [[codex-plugin-authoring]] for the how-to guide.
 
+Real-world plugin example: [[shortcuts-playground]] — Federico Viticci's 6-month project generating Apple Shortcuts via Codex + Claude Code. Per Viticci, Claude Code has a richer plugin architecture than Codex for now.
+
 ## Related
 
 - [[codex-plugin-authoring]] — how to create and distribute Codex plugins
+- [[shortcuts-playground]] — concrete real-world plugin example
+- [[claude-code]] — comparable agent; richer plugin architecture per independent review

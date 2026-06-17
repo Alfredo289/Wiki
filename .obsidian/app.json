@@ -1,13 +1,17 @@
 {
   "promptDelete": false,
-  "readableLineLength": false,
+  "readableLineLength": true,
   "showUnsupportedFiles": true,
   "attachmentFolderPath": "raw/assets",
   "showInlineTitle": false,
   "alwaysUpdateLinks": true,
   "propertiesInDocument": "visible",
   "userIgnoreFilters": [
-    "templates/"
+    "templates/",
+    "tools/",
+    "wiki/sops/",
+    "tools/wiki_lint/"
   ],
-  "showLineNumber": false
+  "showLineNumber": false,
+  "livePreview": false
 }

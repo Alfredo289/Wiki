@@ -1,19 +1,24 @@
 ---
-title: "Codex plugin authoring"
+title: Codex plugin authoring
 type: concept
 date: 2026-06-15
-explored: false
-tags: [codex, plugins, agent-tooling, reference]
+explored: true
+tags:
+  - codex
+  - plugins
+  - agent-tooling
+  - reference
 confidence: 0.8
-wiki_sources: ["codex-plugin-build-docs"]
-provenanceState: single
+wiki_sources:
+  - codex-plugin-build-docs
+  - shortcuts-playground-launch
+provenanceState: merged
+source_url: https://developers.openai.com/codex/plugins/build
 ---
 
 # Codex plugin authoring
 
 How to create, package, and distribute plugins for [[openai-codex]]. A plugin bundles skills, MCP servers, lifecycle hooks, and app integrations into a single installable unit distributed via JSON marketplace catalogs.
-
-*Single-source provenance — justified because this is an official reference guide Tom keeps for active use.*
 
 ## Key ideas
 
@@ -151,7 +156,9 @@ features.plugin_sharing = false
 ## How it connects
 
 - [[openai-codex]] — the platform these plugins extend
+- [[claude-code]] — also supports the same plugin conventions (richer architecture per [[federico-viticci]])
 - [[codex-plugin-build-docs]] — source page (official docs)
+- [[shortcuts-playground-launch]] — real-world example: [[shortcuts-playground]] uses Craig Loop hooks, `/build`+`/remix` commands, sub-agents
 - MCP server bundling inside plugins mirrors how Claude Code uses `.mcp.json` at repo root — same convention, different scope
 
 ## Counter-arguments

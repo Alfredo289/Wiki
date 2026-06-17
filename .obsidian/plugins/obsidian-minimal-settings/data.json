@@ -8,7 +8,7 @@
   "lineWidth": 40,
   "lineWidthWide": 60,
   "maxWidth": 88,
-  "textNormal": 16,
+  "textNormal": 17,
   "textSmall": 13,
   "imgGrid": true,
   "imgWidth": "img-wide",
@@ -17,7 +17,7 @@
   "mapWidth": "map-default-width",
   "chartWidth": "chart-default-width",
   "colorfulHeadings": false,
-  "colorfulFrame": true,
+  "colorfulFrame": false,
   "colorfulActiveStates": true,
   "trimNames": true,
   "labeledNav": true,
@@ -29,6 +29,6 @@
   "underlineExternal": true,
   "folding": true,
   "lineNumbers": false,
-  "readableLineLength": false,
+  "readableLineLength": true,
   "devBlockWidth": false
 }

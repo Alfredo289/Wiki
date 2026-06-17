@@ -17,6 +17,11 @@ the mistake, then the rule that replaces it. Never delete entries; supersede the
   say so in the body — never guess high.
 - **Don't resolve a wikilink you haven't checked.** Every `[[link]]` must point at
   a real page slug or a real page title; otherwise leave it as plain text.
-- **Don't touch `raw/`.** Propose a slug + frontmatter; stop. The move is Tom's
-  (Integrity Rule 2).
+- **Don't write `raw/` on your own.** Tom curates `raw/`. The only agent write is
+  the `wiki-capture-triage` skill, and only when Tom invokes it (Integrity Rule 2).
+- **`~/Inbox/` is not part of this vault.** Never reference it or route captures
+  through it. Captures come from Tom filling `raw/clippings/`, or from
+  `wiki-capture-triage` writing a conversation note there.
 - **`explored` is always `false` from you** (Integrity Rule 4). No exceptions.
+- **Write the vault in English only.** Every `raw/` and `wiki/` file is written in
+  English, regardless of the conversation language.

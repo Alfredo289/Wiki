@@ -1,14 +1,15 @@
 {
   "showRibbon": false,
-  "accentColor": "#0090ff",
-  "interfaceFontFamily": "Geist",
-  "cssTheme": "",
-  "textFontFamily": "Geist",
-  "monospaceFontFamily": "Geist Mono",
+  "accentColor": "#454545",
+  "interfaceFontFamily": "SF Pro Text",
+  "cssTheme": "Minimal",
+  "textFontFamily": "SF Pro Text",
+  "monospaceFontFamily": "JetBrains Mono",
   "enabledCssSnippets": [
-    "github-markdown"
+    "github-markdown",
+    "dashboard"
   ],
-  "baseFontSize": 16,
+  "baseFontSize": 17,
   "nativeMenus": true,
   "translucency": false,
   "theme": "obsidian",

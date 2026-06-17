@@ -1,5 +1,11 @@
 {
   "browser" : {
+    "pinnedChildReferences" : [
+      {
+        "childName" : "dashboard.md",
+        "identityKey" : "fs:16777229:229496891"
+      }
+    ],
     "showMarkdownOnly" : true,
     "sortDirection" : "ascending",
     "sortField" : "name"

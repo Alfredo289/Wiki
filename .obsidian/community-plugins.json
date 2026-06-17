@@ -11,5 +11,8 @@
   "obsidian-custom-frames",
   "dataview",
   "templater-obsidian",
-  "obsidian-icon-folder"
+  "obsidian-icon-folder",
+  "actions-uri",
+  "obsidian-local-rest-api",
+  "claude-sidebar"
 ]

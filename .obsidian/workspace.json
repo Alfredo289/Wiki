@@ -4,25 +4,65 @@
     "type": "split",
     "children": [
       {
-        "id": "2ac92968f16b2042",
+        "id": "be4f7765a1ec4cd6",
         "type": "tabs",
         "children": [
           {
-            "id": "db1ef41b195f49be",
+            "id": "d22b19f293f31e93",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "raw/clippings/Untitled.md",
+                "file": "_templates/source.md",
                 "mode": "preview",
-                "source": false
+                "source": true,
+                "backlinks": false
               },
               "icon": "lucide-file",
-              "title": "Untitled"
+              "title": "source"
+            }
+          },
+          {
+            "id": "6edd25feebaef87e",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "_templates/raw-own.md",
+                "mode": "source",
+                "source": true,
+                "backlinks": true,
+                "backlinkOpts": {
+                  "collapseAll": false,
+                  "extraContext": false,
+                  "sortOrder": "alphabetical",
+                  "showSearch": false,
+                  "searchQuery": "",
+                  "backlinkCollapsed": false,
+                  "unlinkedCollapsed": true
+                }
+              },
+              "icon": "lucide-file",
+              "title": "raw-own"
+            }
+          },
+          {
+            "id": "914d828a79179103",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "wiki/sources/zsh-setup.md",
+                "mode": "preview",
+                "source": true,
+                "backlinks": false
+              },
+              "icon": "lucide-file",
+              "title": "zsh-setup"
             }
           }
         ],
-        "stacked": true
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -42,7 +82,7 @@
               "type": "file-explorer",
               "state": {
                 "sortOrder": "alphabetical",
-                "autoReveal": false
+                "autoReveal": true
               },
               "icon": "lucide-folder-closed",
               "title": "Files"
@@ -54,8 +94,8 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "path:wiki path:Vault section:()",
-                "matchingCase": false,
+                "query": "tag:#macos",
+                "matchingCase": true,
                 "explainSearch": true,
                 "collapseAll": true,
                 "extraContext": true,
@@ -79,7 +119,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 299.5,
+    "collapsed": true
   },
   "right": {
     "id": "6dc63023c47ce134",
@@ -90,28 +131,84 @@
         "type": "tabs",
         "children": [
           {
+            "id": "7be803d8c59c6c0a",
+            "type": "leaf",
+            "state": {
+              "type": "file-properties",
+              "state": {
+                "file": "wiki/sources/zsh-setup.md"
+              },
+              "icon": "lucide-info",
+              "title": "File properties for zsh-setup"
+            }
+          },
+          {
+            "id": "b3145f0bca67dd65",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "raw/clippings/Build plugins – Codex.md",
+                "followCursor": false,
+                "showSearch": true,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Build plugins – Codex"
+            }
+          },
+          {
             "id": "c8c0fac9a9b3cd91",
             "type": "leaf",
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Untitled.md",
+                "file": "raw/clippings/Build plugins – Codex.md",
                 "linksCollapsed": false,
-                "unlinkedCollapsed": true
+                "unlinkedCollapsed": false
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from Untitled"
+              "title": "Outgoing links from Build plugins – Codex"
             }
           },
           {
-            "id": "38c1b1716c7389e5",
+            "id": "0f2e22521f1d8190",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "raw/clippings/Build plugins – Codex.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Build plugins – Codex"
+            }
+          },
+          {
+            "id": "11da17ed8eb5eb0e",
+            "type": "leaf",
+            "state": {
+              "type": "vault-terminal",
+              "state": {},
+              "icon": "bot",
+              "title": "Claude"
+            }
+          },
+          {
+            "id": "7463503ee5addcf1",
             "type": "leaf",
             "state": {
               "type": "tag",
               "state": {
-                "sortOrder": "alphabetical",
+                "sortOrder": "frequency",
                 "useHierarchy": true,
-                "showSearch": true,
+                "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-tags",
@@ -119,7 +216,7 @@
             }
           },
           {
-            "id": "23fe530731f61777",
+            "id": "2e9837009cdca0f2",
             "type": "leaf",
             "state": {
               "type": "all-properties",
@@ -131,47 +228,12 @@
               "icon": "lucide-archive",
               "title": "All properties"
             }
-          },
-          {
-            "id": "b3145f0bca67dd65",
-            "type": "leaf",
-            "state": {
-              "type": "outline",
-              "state": {
-                "file": "raw/clippings/Untitled.md",
-                "followCursor": false,
-                "showSearch": true,
-                "searchQuery": ""
-              },
-              "icon": "lucide-list",
-              "title": "Outline of Untitled"
-            }
-          },
-          {
-            "id": "0f2e22521f1d8190",
-            "type": "leaf",
-            "state": {
-              "type": "backlink",
-              "state": {
-                "file": "raw/clippings/Untitled.md",
-                "collapseAll": false,
-                "extraContext": false,
-                "sortOrder": "alphabetical",
-                "showSearch": false,
-                "searchQuery": "",
-                "backlinkCollapsed": true,
-                "unlinkedCollapsed": true
-              },
-              "icon": "links-coming-in",
-              "title": "Backlinks for Untitled"
-            }
           }
-        ],
-        "currentTab": 3
+        ]
       }
     ],
     "direction": "horizontal",
-    "width": 300.5
+    "width": 375.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -184,47 +246,53 @@
       "bases:Create new base": false,
       "obsidian42-brat:BRAT": true,
       "obsidian-custom-frames:Open Todoist": false,
-      "templater-obsidian:Templater": false
+      "templater-obsidian:Templater": false,
+      "workspaces:Manage workspace layouts": false,
+      "zk-prefixer:Create new unique note": false,
+      "publish:Publish changes...": false,
+      "claude-sidebar:New Claude Tab": false
     }
   },
-  "active": "db1ef41b195f49be",
+  "active": "914d828a79179103",
   "lastOpenFiles": [
-    "AGENTS.md",
-    "CONTEXT.md",
+    "claude plugin.md",
     "dashboard.md",
-    "raw/clippings/assets",
-    "raw/clippings/Untitled.md",
-    "raw/clippings",
-    "raw",
-    "wiki/decisions/no-index-md-meta-file.md",
-    "wiki/decisions/adopt-three-layer-vault.md",
-    "wiki/concepts/three-layer-vault.md",
-    "wiki/concepts/agentic-loops.md",
-    "wiki/syntheses",
-    "wiki/sources",
-    "wiki/sops",
-    "wiki/outputs",
-    "wiki/entities",
-    "wiki/decisions",
-    "wiki/concepts",
-    "Wiki/decisions/no-index-md-meta-file.md",
-    "Wiki/decisions/adopt-three-layer-vault.md",
-    "Wiki/concepts/three-layer-vault.md",
-    "Wiki/concepts/agentic-loops.md",
-    "WIKI/decisions/no-index-md-meta-file.md",
-    "WIKI/decisions/adopt-three-layer-vault.md",
-    "WIKI/concepts/three-layer-vault.md",
-    "WIKI/concepts/agentic-loops.md",
-    "RAW/clippings/Untitled.md",
-    "Raw/clippings/Untitled.md",
-    "log.md",
-    "learnings.md",
-    "Untitled.md",
-    "raw/(S+) Meinung Wim Wenders und Konstantin Wecker Die Mädchen von einst leiden noch immer.md",
-    "Funkraum.md",
+    "raw/clippings/Introducing RemCTL The Power-User Reminders CLI for macOS and AI Agents.md",
+    "raw/clippings/Build plugins – Codex.md",
+    "raw/clippings/full-height-sidebar-on-macos.md",
+    "raw/clippings/Introducing Shortcuts Playground Create Apple Shortcuts with Claude Code or Codex.md",
+    "raw/clippings/yazi-setup.md",
+    "raw/clippings/zsh-setup.md",
+    "wiki/sources/shortcuts-playground-launch.md",
+    "wiki/sources/full-height-sidebar-on-macos.md",
+    "wiki/sources/codex-plugin-build-docs.md",
+    "wiki/entities/shortcuts-playground.md",
+    "wiki/sources/yazi-setup.md",
+    "wiki/entities/yazi.md",
+    "wiki/entities/openai-codex.md",
+    "wiki/entities/claude-code.md",
+    "wiki/concepts/full-height-sidebar.md",
+    "wiki/entities/flowvision.md",
+    "wiki/entities/federico-viticci.md",
+    "wiki/concepts/codex-plugin-authoring.md",
+    "wiki/concepts/agent-validation-loops.md",
+    "wiki/entities/zoxide.md",
+    "wiki/entities/powerlevel10k.md",
+    "wiki/entities/oh-my-zsh.md",
+    "wiki/entities/apple-shortcuts.md",
+    "wiki/decisions/zshrc-not-stowed.md",
+    "dashboard.md.bak-20260617-071441",
+    "raw/assets",
+    "_templates",
+    "tools/wiki_lint/test-corpus/wiki/syntheses",
+    "tools/wiki_lint/test-corpus/wiki/sources",
+    "tools/wiki_lint/test-corpus/wiki/sops",
+    "tools/wiki_lint/test-corpus/wiki/outputs",
+    "tools/wiki_lint/test-corpus/wiki/entities",
+    "tools/wiki_lint/test-corpus/wiki/decisions",
+    "tools/wiki_lint/test-corpus/wiki/concepts",
+    "tools/wiki_lint/test-corpus/raw/raycast-screenshot-window-tile.png",
     "Untitled.canvas",
-    "wiki/index.md",
-    "Untitled/Untitled.md",
     "Untitled 3.canvas",
     "Untitled 1.canvas",
     "Untitled 2.canvas"

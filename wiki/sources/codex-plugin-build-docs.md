@@ -1,12 +1,17 @@
 ---
-title: "Build plugins – Codex"
+title: Build plugins – Codex
 type: source
 date: 2026-06-15
-explored: false
-tags: [codex, openai, plugins, agent-tooling]
+explored: true
+tags:
+  - codex
+  - openai
+  - plugins
+  - agent-tooling
 confidence: 0.8
-raw_sources: ["Build plugins – Codex.md"]
-source_url: "https://developers.openai.com/codex/plugins/build"
+raw_sources:
+  - Build plugins – Codex.md
+source_url: https://developers.openai.com/codex/plugins/build
 source_type: article
 fetched: 2026-06-15
 ---
